@@ -113,7 +113,7 @@ const Menu = () => {
                 <div className="dropdown">
                   <div className="dropdown-toggle" style={styles.dropdownToggle} onClick={toggleDropdown}>
                     <img src={`${process.env.REACT_APP_API_URL}/${currentUser?.avatar}`} alt="Avatar" style={styles.userAvatar} />
-                    <span>{currentUser?.hoten || "Người dùng"}</span>
+                    <span>{currentUser?.fullname || "Người dùng"}</span>
                   </div>
                   <ul style={styles.dropdownMenu}>
                     <li>

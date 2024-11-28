@@ -91,10 +91,10 @@ const MenuAdmin = () => {
           </NavLink>
           <div className="collapse navbar-collapse justify-content-between px-lg-3">
             <div className="navbar-nav mx-auto py-0">
-              <NavLink to="/khoahoc" className="nav-item nav-link" activeClassName="active" exact>
+              <NavLink to="/admincourse" className="nav-item nav-link" activeClassName="active" exact>
                 Khoá học
               </NavLink>
-              <NavLink to="/giangvien" className="nav-item nav-link" activeClassName="active" exact>
+              <NavLink to="/admininstructor" className="nav-item nav-link" activeClassName="active" exact>
                 Giảng viên
               </NavLink>
               {/* <NavLink to="/khoahoccuatoi" className="nav-item nav-link" activeClassName="active" exact>

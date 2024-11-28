@@ -1,14 +1,16 @@
 import MainLayout from "./layouts/MainLayout";
-import Home from "./pages/Home";
-import Courses from "./pages/Courses";
-import CourseDetail from "./pages/CourseDetail";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import MyCourses from "./pages/MyCourses";
-import Teachers from "./pages/Teachers";
-import Study from "./pages/Study";
-import Header from "./components/Header";
 import AdminCourse from "./pages/Admin";
+import AdminAddCourse from "./pages/Admin/AdminAddCourse";
+import AdminAddInstructor from "./pages/Admin/AdminAddInstructor";
+import AdminInstructor from "./pages/Admin/AdminInstructor";
+import CourseDetail from "./pages/CourseDetail";
+import Courses from "./pages/Courses";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import MyCourses from "./pages/MyCourses";
+import Signup from "./pages/Signup";
+import Study from "./pages/Study";
+import Teachers from "./pages/Teachers";
 
 export const mainRouters = [
   {
@@ -22,7 +24,7 @@ export const mainRouters = [
     layout: MainLayout,
   },
   {
-    path: "/chitietkhoahoc",
+    path: "/chitietkhoahoc/:id",
     component: CourseDetail,
     layout: MainLayout,
   },
@@ -54,6 +56,21 @@ export const mainRouters = [
   {
     path: "/admincourse",
     component: AdminCourse,
+    layout: null,
+  },
+  {
+    path: "/addcourse",
+    component: AdminAddCourse,
+    layout: null,
+  },
+  {
+    path: "/admininstructor",
+    component: AdminInstructor,
+    layout: null,
+  },
+  {
+    path: "/addinstructor",
+    component: AdminAddInstructor,
     layout: null,
   },
 ];

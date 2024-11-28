@@ -33,6 +33,7 @@ const Teachers = () => {
                 <div className="bg-secondary p-4">
                   <h5>Trần Tiến Thế</h5>
                   <p className="m-0">Web Designer</p>
+                  <p className="m-0">0988708143</p>
                 </div>
               </div>
             </div>
@@ -55,6 +56,7 @@ const Teachers = () => {
                 <div className="bg-secondary p-4">
                   <h5>Hồ Xuân Đại</h5>
                   <p className="m-0">AI Developer</p>
+                  <p className="m-0">0988708143</p>
                 </div>
               </div>
             </div>
@@ -77,6 +79,7 @@ const Teachers = () => {
                 <div className="bg-secondary p-4">
                   <h5>Đậu Đức Toàn</h5>
                   <p className="m-0">Back-End Developer</p>
+                  <p className="m-0">0988708143</p>
                 </div>
               </div>
             </div>
@@ -99,6 +102,7 @@ const Teachers = () => {
                 <div className="bg-secondary p-4">
                   <h5>Lê Thị Hằng</h5>
                   <p className="m-0">Tester</p>
+                  <p className="m-0">0988708143</p>
                 </div>
               </div>
             </div>
@@ -121,6 +125,7 @@ const Teachers = () => {
                 <div className="bg-secondary p-4">
                   <h5>Trần Thị Hoài Thu</h5>
                   <p className="m-0">Tester</p>
+                  <p className="m-0">0988708143</p>
                 </div>
               </div>
             </div>
@@ -143,6 +148,7 @@ const Teachers = () => {
                 <div className="bg-secondary p-4">
                   <h5>Đoàn Tiến Lợi</h5>
                   <p className="m-0">Back-End Developer</p>
+                  <p className="m-0">0988708143</p>
                 </div>
               </div>
             </div>

@@ -1,6 +1,28 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 const CourseDetail = () => {
+  const { id } = useParams(); // Lấy id khóa học từ URL
+  const [course, setCourse] = useState(null); // Dữ liệu khóa học
+  const [rating, setRating] = useState(0); // Đánh giá khóa học
+
+  useEffect(() => {
+    // Lấy thông tin chi tiết khóa học theo id
+    const fetchCourseDetail = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/course/${id}`);
+        setCourse(response.data); // Cập nhật thông tin khóa học
+      } catch (error) {
+        console.error("Error fetching course detail:", error);
+      }
+    };
+
+    fetchCourseDetail();
+  }, [id]);
+
+  // Kiểm tra xem dữ liệu đã được tải xong chưa
+  if (!course) return <div>Loading...</div>;
   return (
     <div>
       {/* <!-- Detail Start --> */}
@@ -11,23 +33,12 @@ const CourseDetail = () => {
               <div className="mb-5">
                 <div className="section-title position-relative mb-5">
                   <h6 className="d-inline-block position-relative text-primary text-uppercase pb-2">Chi tiết khoá học</h6>
-                  <h1 className="display-4">Web design & development courses for beginners</h1>
+                  <h1 className="display-4">{course?.name}</h1>
                 </div>
-                <img className="img-fluid rounded w-100 mb-4" src="assets/img/header.jpg" alt="Image" />
-                <p>Tempor erat elitr at rebum at at clita aliquyam consetetur. Diam dolor diam ipsum et, tempor voluptua sit consetetur sit. Aliquyam diam amet diam et eos sadipscing labore. Clita erat ipsum et lorem et sit, sed stet no labore lorem sit. Sanctus clita duo justo et tempor consetetur takimata eirmod, dolores takimata consetetur invidunt magna dolores aliquyam dolores dolore. Amet erat amet et magna</p>
-
-                <p>Sadipscing labore amet rebum est et justo gubergren. Et eirmod ipsum sit diam ut magna lorem. Nonumy vero labore lorem sanctus rebum et lorem magna kasd, stet amet magna accusam consetetur eirmod. Kasd accusam sit ipsum sadipscing et at at sanctus et. Ipsum sit gubergren dolores et, consetetur justo invidunt at et aliquyam ut et vero clita. Diam sea sea no sed dolores diam nonumy, gubergren sit stet no diam kasd vero.</p>
+                <img className="img-fluid rounded w-100 mb-4" src={process.env.REACT_APP_API_URL + "/" + course?.coverImage} alt="Image" />
               </div>
 
-              <h2 className="mb-3">Related Courses</h2>
-              <p>Tempor erat elitr at rebum at at clita aliquyam consetetur. Diam dolor diam ipsum et, tempor voluptua sit consetetur sit. Aliquyam diam amet diam et eos sadipscing labore. Clita erat ipsum et lorem et sit, sed stet no labore lorem sit. Sanctus clita duo justo et tempor consetetur takimata eirmod, dolores takimata consetetur invidunt magna dolores aliquyam dolores dolore. Amet erat amet et magna</p>
-
-              <p>Sadipscing labore amet rebum est et justo gubergren. Et eirmod ipsum sit diam ut magna lorem. Nonumy vero labore lorem sanctus rebum et lorem magna kasd, stet amet magna accusam consetetur eirmod. Kasd accusam sit ipsum sadipscing et at at sanctus et. Ipsum sit gubergren dolores et, consetetur justo invidunt at et aliquyam ut et vero clita. Diam sea sea no sed dolores diam nonumy, gubergren sit stet no diam kasd vero.</p>
-
-              <h2 className="mb-3">Related Courses</h2>
-              <p>Tempor erat elitr at rebum at at clita aliquyam consetetur. Diam dolor diam ipsum et, tempor voluptua sit consetetur sit. Aliquyam diam amet diam et eos sadipscing labore. Clita erat ipsum et lorem et sit, sed stet no labore lorem sit. Sanctus clita duo justo et tempor consetetur takimata eirmod, dolores takimata consetetur invidunt magna dolores aliquyam dolores dolore. Amet erat amet et magna</p>
-
-              <p>Sadipscing labore amet rebum est et justo gubergren. Et eirmod ipsum sit diam ut magna lorem. Nonumy vero labore lorem sanctus rebum et lorem magna kasd, stet amet magna accusam consetetur eirmod. Kasd accusam sit ipsum sadipscing et at at sanctus et. Ipsum sit gubergren dolores et, consetetur justo invidunt at et aliquyam ut et vero clita. Diam sea sea no sed dolores diam nonumy, gubergren sit stet no diam kasd vero.</p>
+              <div dangerouslySetInnerHTML={{ __html: course?.description }} />
             </div>
 
             <div className="col-lg-4 mt-5 mt-lg-0">
@@ -41,7 +52,7 @@ const CourseDetail = () => {
                 </div>
                 <div className="d-flex justify-content-between border-bottom px-4">
                   <h6 className="text-white my-3">Giảng viên</h6>
-                  <h6 className="text-white my-3">Đoàn Tiến Lợi</h6>
+                  <h6 className="text-white my-3">{course?.instructor.name}</h6>
                 </div>
 
                 <div className="d-flex justify-content-between border-bottom px-4">
@@ -50,7 +61,7 @@ const CourseDetail = () => {
                 </div>
                 <div className="d-flex justify-content-between border-bottom px-4">
                   <h6 className="text-white my-3">Thời lượng học</h6>
-                  <h6 className="text-white my-3">24 giờ</h6>
+                  <h6 className="text-white my-3">{course.totalDurationMinutes} giờ</h6>
                 </div>
                 <div className="d-flex justify-content-between border-bottom px-4">
                   <h6 className="text-white my-3">Số học viên</h6>
@@ -60,7 +71,7 @@ const CourseDetail = () => {
                   <h6 className="text-white my-3">Ngôn ngữ</h6>
                   <h6 className="text-white my-3">Tiếng Việt</h6>
                 </div>
-                <h5 className="text-white text-center py-3 px-4 m-0">Giá tiền: 500.000 VNĐ</h5>
+                <h5 className="text-white text-center py-3 px-4 m-0">Giá tiền: {course?.price} VNĐ</h5>
                 <div className="py-3 px-4">
                   <a className="btn btn-block btn-secondary py-3 px-5" href="">
                     Đăng ký ngay
@@ -142,24 +153,6 @@ const CourseDetail = () => {
                     ))}
                   </div>
                   <p className="mt-2">Khoá học hay, hiệu quả</p>
-                </div>
-              </div>
-
-              <div className="media mb-4">
-                <img src="assets2/img/user.jpg" alt="Image" className="img-fluid rounded-circle mr-3 mt-1" style={{ width: "45px" }} />
-                <div className="media-body">
-                  <h6>
-                    John Doe{" "}
-                    <small>
-                      <i>01 Jan 2045 at 12:00pm</i>
-                    </small>
-                  </h6>
-                  <div className="ml-auto">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <i key={star} className={`fa fa-star ${star <= 4 ? "text-warning" : "text-secondary"}`} style={{ fontSize: "16px" }} />
-                    ))}
-                  </div>
-                  <p className="mt-2">Diam amet duo labore stet elitr ea clita ipsum, tempor labore accusam ipsum et no at. Kasd diam tempor rebum magna dolores sed sed eirmod ipsum. Gubergren clita aliquyam consetetur sadipscing, at tempor amet ipsum diam tempor consetetur at sit.</p>
                 </div>
               </div>
             </div>
