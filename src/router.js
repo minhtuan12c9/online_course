@@ -8,6 +8,7 @@ import MyCourses from "./pages/MyCourses";
 import Teachers from "./pages/Teachers";
 import Study from "./pages/Study";
 import Header from "./components/Header";
+import AdminCourse from "./pages/Admin";
 
 export const mainRouters = [
   {
@@ -48,6 +49,11 @@ export const mainRouters = [
   {
     path: "/hoc",
     component: Study,
+    layout: null,
+  },
+  {
+    path: "/admincourse",
+    component: AdminCourse,
     layout: null,
   },
 ];

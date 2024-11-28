@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import Swal from "sweetalert2";
 
-const Menu = () => {
+const MenuAdmin = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -91,9 +91,6 @@ const Menu = () => {
           </NavLink>
           <div className="collapse navbar-collapse justify-content-between px-lg-3">
             <div className="navbar-nav mx-auto py-0">
-              <NavLink to="/" className="nav-item nav-link" activeClassName="active" exact>
-                Trang chủ
-              </NavLink>
               <NavLink to="/khoahoc" className="nav-item nav-link" activeClassName="active" exact>
                 Khoá học
               </NavLink>
@@ -108,7 +105,16 @@ const Menu = () => {
               </a>
             </div>
 
-            {isLoggedIn ? (
+            <div className="mx-auto" style={{ width: "100%", maxWidth: "600px" }}>
+              <div className="input-group">
+                <input type="text" className="form-control border-light" style={{ padding: "30px 25px" }} placeholder="Nhập tên khoá học cần tìm" />
+                <div className="input-group-append">
+                  <button className="btn btn-primary px-4 px-lg-5">Tìm kiếm</button>
+                </div>
+              </div>
+            </div>
+
+            {/* {isLoggedIn ? (
               <div style={styles.navItem}>
                 <div className="dropdown">
                   <div className="dropdown-toggle" style={styles.dropdownToggle} onClick={toggleDropdown}>
@@ -145,7 +151,7 @@ const Menu = () => {
               <NavLink to="/dangnhap" className="btn-login" style={styles.btnLogin}>
                 Đăng nhập
               </NavLink>
-            )}
+            )} */}
           </div>
         </nav>
       </div>
@@ -153,4 +159,4 @@ const Menu = () => {
   );
 };
 
-export default Menu;
+export default MenuAdmin;

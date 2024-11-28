@@ -44,7 +44,7 @@ const Signup = () => {
 
     try {
       // Gửi yêu cầu đăng ký (API call)
-      const response = await axios.post("http://localhost:8080/api/user", {
+      const response = await axios.post("http://localhost:8000/api/user", {
         fullname: formData.name,
         email: formData.email,
         password: formData.password,
