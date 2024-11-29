@@ -11,6 +11,7 @@ import MyCourses from "./pages/MyCourses";
 import Signup from "./pages/Signup";
 import Study from "./pages/Study";
 import Teachers from "./pages/Teachers";
+import AdminChapter from "./pages/Admin/AdminChapter";
 
 export const mainRouters = [
   {
@@ -71,6 +72,11 @@ export const mainRouters = [
   {
     path: "/addinstructor",
     component: AdminAddInstructor,
+    layout: null,
+  },
+  {
+    path: "/adminchapter/:id",
+    component: AdminChapter,
     layout: null,
   },
 ];
