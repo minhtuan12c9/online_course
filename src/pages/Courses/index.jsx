@@ -42,7 +42,7 @@ const Courses = () => {
             </div>
           ) : (
             <div className="row">
-              {courses.map((course) => (
+              {[...courses].reverse().map((course) => (
                 <div className="col-lg-4 col-md-6 pb-4" key={course.id}>
                   <NavLink className="courses-list-item position-relative d-block overflow-hidden mb-2" to={`/chitietkhoahoc/${course.id}`}>
                     <img className="img-fluid" src={process.env.REACT_APP_API_URL + "/" + course.coverImage} alt={course.name} />

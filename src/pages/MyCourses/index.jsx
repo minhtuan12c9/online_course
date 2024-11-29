@@ -11,7 +11,7 @@ const MyCourses = () => {
             <div className="col-lg-8">
               <div className="section-title text-center position-relative mb-5">
                 <h6 className="d-inline-block position-relative text-primary text-uppercase pb-2" style={{ fontSize: "30px" }}>
-                  Tất cả khoá học
+                  Khoá học của tôi
                 </h6>
                 {/* <h1 className="display-4">Các khoá học hiệu quả</h1> */}
               </div>

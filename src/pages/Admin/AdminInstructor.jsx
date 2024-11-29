@@ -39,9 +39,9 @@ const AdminInstructor = () => {
             </div>
           </NavLink>
 
-          {/* Hiển thị danh sách giảng viên */}
+          {/* Hiển thị danh sách giảng viên theo thứ tự ngược lại */}
           <div className="row">
-            {instructors.map((instructor) => (
+            {[...instructors].reverse().map((instructor) => (
               <div key={instructor.id} className="col-md-6 col-lg-3 text-center team mb-4">
                 <div className="team-item rounded overflow-hidden mb-2">
                   <div className="team-img position-relative">

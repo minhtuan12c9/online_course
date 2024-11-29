@@ -12,6 +12,8 @@ import Signup from "./pages/Signup";
 import Study from "./pages/Study";
 import Teachers from "./pages/Teachers";
 import AdminChapter from "./pages/Admin/AdminChapter";
+import AdminAddLessonContent from "./pages/Admin/AdminAddLessonContent";
+import CoursesSearch from "./pages/CourseSearch";
 
 export const mainRouters = [
   {
@@ -50,7 +52,7 @@ export const mainRouters = [
     layout: MainLayout,
   },
   {
-    path: "/hoc",
+    path: "/hoc/:id",
     component: Study,
     layout: null,
   },
@@ -78,5 +80,15 @@ export const mainRouters = [
     path: "/adminchapter/:id",
     component: AdminChapter,
     layout: null,
+  },
+  {
+    path: "/adminaddlessoncontent/:id",
+    component: AdminAddLessonContent,
+    layout: null,
+  },
+  {
+    path: "/timkiemkhoahoc",
+    component: CoursesSearch,
+    layout: MainLayout,
   },
 ];

@@ -125,26 +125,24 @@ const CourseDetail = () => {
 
             {/* Form nhập đánh giá */}
             <div className="mb-5">
-              <textarea className="form-control mb-3" rows="3" placeholder="Đánh giá của bạn" disabled />
+              <textarea className="form-control mb-3" rows="3" placeholder="Đánh giá của bạn" />
               <div className="d-flex align-items-center mb-3">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <i key={star} className="fa fa-star text-secondary" style={{ cursor: "pointer", fontSize: "20px", marginRight: "5px" }} />
                 ))}
               </div>
-              <button className="btn btn-primary" disabled>
-                Gửi đánh giá
-              </button>
+              <button className="btn btn-primary">Gửi đánh giá</button>
             </div>
 
             {/* Danh sách bình luận */}
             <div className="mt-5">
               <div className="media mb-4">
-                <img src="assets2/img/user.jpg" alt="Image" className="img-fluid rounded-circle mr-3 mt-1" style={{ width: "45px" }} />
+                <img src="/assets2/img/user.jpg" alt="Image" className="img-fluid rounded-circle mr-3 mt-1" style={{ width: "45px" }} />
                 <div className="media-body">
                   <h6>
-                    John Doe{" "}
+                    Hồ Phan Minh Tuấn{" "}
                     <small>
-                      <i>01 Jan 2045 at 12:00pm</i>
+                      <i>30/11/2024 at 02:17am</i>
                     </small>
                   </h6>
                   <div className="ml-auto">

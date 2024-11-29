@@ -4,7 +4,7 @@ import { useLocation, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 
-const SidebarAdmin = () => {
+const SidebarAdmin = ({ setLessonContentActive }) => {
   const [activeAccordion, setActiveAccordion] = useState(null); // Trạng thái accordion
   const [showModal, setShowModal] = useState(false); // Trạng thái hiển thị modal
   const [showModal2, setShowModal2] = useState(false); // Trạng thái hiển thị modal
@@ -17,6 +17,14 @@ const SidebarAdmin = () => {
   const params = useParams();
   const navigate = useNavigate();
   const [reloadKey, setReloadKey] = useState(0);
+  const [selectedLesson, setSelectedLesson] = useState(null); // Trạng thái bài học được chọn
+
+  const handleAddContentRedirect = (lessonId) => {
+    navigate(`/adminaddlessoncontent/${lessonId}`);
+  };
+  const toggleLessonOptions = (lessonIndex) => {
+    setSelectedLesson(selectedLesson === lessonIndex ? null : lessonIndex);
+  };
 
   // Fetch danh sách chương từ API
   useEffect(() => {
@@ -248,9 +256,31 @@ const SidebarAdmin = () => {
               {/* Danh sách bài học */}
               {lessons.length > 0 ? (
                 lessons.map((lesson, lessonIndex) => (
-                  <button key={lessonIndex} style={{ fontSize: "15px", borderRadius: "10px", marginBottom: "10px" }} className="p-2 btn btn-light">
-                    {lesson.name} - {lesson.durationMinutes} phút
-                  </button>
+                  <div key={lessonIndex}>
+                    <button
+                      onClick={() => {
+                        toggleLessonOptions(lessonIndex);
+                        setLessonContentActive(lesson.lessonContents[0]);
+                      }}
+                      style={{ fontSize: "15px", borderRadius: "10px", marginBottom: "10px" }}
+                      className="p-2 btn btn-light"
+                    >
+                      {lesson.name} - {lesson.durationMinutes} phút
+                    </button>
+                    {selectedLesson === lessonIndex && (
+                      <div className="d-flex flex-column" style={{ padding: "5px" }}>
+                        <button className="btn btn-primary mb-2" onClick={() => handleAddContentRedirect(lesson.id)}>
+                          Thêm
+                        </button>
+                        <button className="btn btn-warning mb-2" onClick={() => console.log("Sửa bài học", lesson.id)}>
+                          Sửa
+                        </button>
+                        <button className="btn btn-danger" onClick={() => console.log("Xóa bài học", lesson.id)}>
+                          Xóa
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 ))
               ) : (
                 <p>Không có bài học nào.</p>
