@@ -7,8 +7,12 @@ import { useNavigate } from "react-router-dom";
 const SidebarAdmin = () => {
   const [activeAccordion, setActiveAccordion] = useState(null); // Trạng thái accordion
   const [showModal, setShowModal] = useState(false); // Trạng thái hiển thị modal
+  const [showModal2, setShowModal2] = useState(false); // Trạng thái hiển thị modal
   const [chapterName, setChapterName] = useState(""); // Tên chương nhập vào
   const [chapters, setChapters] = useState([]); // Danh sách chương
+  const [lessonName, setLessonName] = useState(""); // Tên bài học nhập vào
+  const [lessonTime, setLessonTime] = useState(""); // Thời lượng nhập vào
+  const [lessons, setLessons] = useState([]); // Danh sách bài học
   const [error, setError] = useState(null); // Trạng thái lỗi khi thêm chương mới
   const params = useParams();
   const navigate = useNavigate();
@@ -18,7 +22,7 @@ const SidebarAdmin = () => {
   useEffect(() => {
     const fetchChapters = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/chapter"); // API endpoint
+        const response = await axios.get(`http://localhost:8000/api/chapter/${parseInt(params.id)}`); // API endpoint
         setChapters(response.data); // Gán dữ liệu chương vào state
       } catch (error) {
         console.error("Error fetching chapters:", error);
@@ -27,6 +31,19 @@ const SidebarAdmin = () => {
 
     fetchChapters();
   }, [reloadKey]);
+  // Fetch danh sách bài học từ API
+  useEffect(() => {
+    const fetchLessons = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/lesson/${parseInt(chapters[activeAccordion].id)}`); // API endpoint
+        setLessons(response.data); // Gán dữ liệu chương vào state
+      } catch (error) {
+        console.error("Error fetching chapters:", error);
+      }
+    };
+
+    fetchLessons();
+  }, [activeAccordion, reloadKey]);
 
   // Toggle trạng thái accordion
   const toggleAccordion = (index) => {
@@ -53,7 +70,7 @@ const SidebarAdmin = () => {
       // Hiển thị thông báo thành công với SweetAlert2
       Swal.fire({
         title: "Thành công!",
-        text: "Khoá học đã được thêm thành công.",
+        text: "Đã thêm 1 chương mới",
         icon: "success",
         confirmButtonText: "OK",
       }).then(() => {
@@ -62,6 +79,43 @@ const SidebarAdmin = () => {
       });
     } catch (error) {
       setError("Lỗi khi thêm chương mới. Vui lòng thử lại!");
+      console.error("Error adding chapter:", error);
+    }
+  };
+  // Xử lý lưu bài học mới
+  const handleFormSubmit2 = async () => {
+    if (!lessonName.trim()) {
+      setError("Tên bài học không được để trống!");
+      return;
+    }
+    if (!lessonName.trim()) {
+      setError("Vui lòng nhập thời lượng bài học!");
+      return;
+    }
+
+    try {
+      const response = await axios.post("http://localhost:8000/api/lesson/add", {
+        name: lessonName,
+        durationMinutes: lessonTime,
+        chapterId: chapters[activeAccordion].id,
+      });
+      setLessons([...lessons, response.data]); // Thêm bài học mới vào danh sách
+      setLessonName(""); // Reset input
+      setLessonTime("");
+      setShowModal2(false); // Đóng modal
+      setError(null); // Xóa lỗi
+      // Hiển thị thông báo thành công với SweetAlert2
+      Swal.fire({
+        title: "Thành công!",
+        text: "Đã thêm 1 bài học mới",
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then(() => {
+        // Sau khi thông báo xong, chuyển hướng đến trang /adminchapter
+        setReloadKey((prevState) => prevState + 1);
+      });
+    } catch (error) {
+      setError("Lỗi khi thêm bài học mới. Vui lòng thử lại!");
       console.error("Error adding chapter:", error);
     }
   };
@@ -152,6 +206,33 @@ const SidebarAdmin = () => {
         </div>
       )}
 
+      {/* Modal Form 2 */}
+      {showModal2 && (
+        <div style={styles.modalOverlay}>
+          <div style={styles.modalContent}>
+            <h3>Thêm Bài Học Mới</h3>
+            <input type="text" placeholder="Nhập tên bài học" value={lessonName} onChange={(e) => setLessonName(e.target.value)} style={styles.input} />
+            {error && <div style={styles.errorText}>{error}</div>}
+            <input type="text" placeholder="Nhập thời lượng bài học" value={lessonTime} onChange={(e) => setLessonTime(e.target.value)} style={styles.input} />
+            {error && <div style={styles.errorText}>{error}</div>}
+            <div style={styles.modalActions}>
+              <button className="btn btn-success" onClick={handleFormSubmit2}>
+                Lưu
+              </button>
+              <button
+                className="btn btn-danger"
+                onClick={() => {
+                  setShowModal2(false);
+                  setError(null);
+                }}
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Danh sách chương */}
       {chapters.map((chapter, index) => (
         <div className="d-flex flex-column" key={index}>
@@ -161,12 +242,19 @@ const SidebarAdmin = () => {
           </button>
           {activeAccordion === index && (
             <div className="d-flex flex-column" style={{ padding: "10px", backgroundColor: "#f8f9fa" }}>
-              <button className="btn btn-success rounded-pill mb-3" onClick={() => setShowModal(true)}>
+              <button className="btn btn-success rounded-pill mb-3" onClick={() => setShowModal2(true)}>
                 + Thêm bài học mới
               </button>
-              <button style={{ fontSize: "15px", borderRadius: "10px" }} className="p-2">
-                Khái niệm về phần mềm
-              </button>
+              {/* Danh sách bài học */}
+              {lessons.length > 0 ? (
+                lessons.map((lesson, lessonIndex) => (
+                  <button key={lessonIndex} style={{ fontSize: "15px", borderRadius: "10px", marginBottom: "10px" }} className="p-2 btn btn-light">
+                    {lesson.name} - {lesson.durationMinutes} phút
+                  </button>
+                ))
+              ) : (
+                <p>Không có bài học nào.</p>
+              )}
             </div>
           )}
         </div>
