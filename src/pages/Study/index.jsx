@@ -57,7 +57,7 @@ const Study = () => {
                   </div>
                 </div>
 
-                <div className="media mb-4">
+                {/* <div className="media mb-4">
                   <img src="/assets2/img/user.jpg" alt="Image" className="img-fluid rounded-circle mr-3 mt-1" style={{ width: "45px" }} />
                   <div className="media-body">
                     <h6>
@@ -73,7 +73,7 @@ const Study = () => {
                     </div>
                     <p className="mt-2">Hay</p>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
             {/* Đánh giá end */}

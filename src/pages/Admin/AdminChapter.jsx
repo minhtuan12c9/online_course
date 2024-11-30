@@ -29,17 +29,14 @@ const AdminChapter = () => {
             {/* Đánh giá */}
             <div className="mt-5">
               <h3>Bình luận</h3>
-
               {/* Form nhập đánh giá */}
               <div className="mb-5">
                 <textarea className="form-control mb-3" rows="3" placeholder="Người tiện tay vẽ hoa vẽ lá, tôi đa tình tưởng đó là mùa xuân..." />
 
                 <button className="btn btn-primary">Gửi bình luận</button>
               </div>
-
-              {/* Danh sách bình luận */}
               <div className="mt-5">
-                <div className="media mb-4">
+                {/* <div className="media mb-4">
                   <img src="/assets2/img/user.jpg" alt="Image" className="img-fluid rounded-circle mr-3 mt-1" style={{ width: "45px" }} />
                   <div className="media-body">
                     <h6>
@@ -55,9 +52,9 @@ const AdminChapter = () => {
                     </div>
                     <p className="mt-2">Khoá học hay, hiệu quả</p>
                   </div>
-                </div>
+                </div> */}
 
-                <div className="media mb-4">
+                {/* <div className="media mb-4">
                   <img src="/assets2/img/user.jpg" alt="Image" className="img-fluid rounded-circle mr-3 mt-1" style={{ width: "45px" }} />
                   <div className="media-body">
                     <h6>
@@ -73,7 +70,7 @@ const AdminChapter = () => {
                     </div>
                     <p className="mt-2">Hay</p>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
             {/* Đánh giá end */}
