@@ -13,7 +13,7 @@ const AdminCourse = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/course"); // Thay URL theo API của bạn
+        const response = await axios.get("http://localhost:8001/api/course"); // Thay URL theo API của bạn
         setCourses(response.data);
       } catch (error) {
         console.error("Error fetching courses:", error);
@@ -59,7 +59,8 @@ const AdminCourse = () => {
                         <div className="d-flex justify-content-between p-4">
                           <span className="text-white">
                             <i className="fa fa-star mr-2"></i>
-                            {course.rating} <small>({course.reviews})</small>
+                            4,5
+                            {/* {course.rating} <small>({course.reviews})</small> */}
                           </span>
                           <span className="text-white">{course.price.toLocaleString("vi-VN")} VNĐ</span>
                         </div>
