@@ -21,7 +21,7 @@ const Login = () => {
       if (response.ok) {
         const data = await response.json();
         // Lưu thông tin người dùng vào localStorage
-        localStorage.setItem("user", JSON.stringify({ email: data.email, fullname: data.fullname, avatar: data.avatar }));
+        localStorage.setItem("user", JSON.stringify({ id: data.id, email: data.email, fullname: data.fullname, avatar: data.avatar }));
         // Hiển thị thông báo thành công
         Swal.fire({
           title: "Thành công!",

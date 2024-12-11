@@ -1,11 +1,29 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import Swal from "sweetalert2";
+import { format } from "date-fns";
 
 const CourseDetail = () => {
   const { id } = useParams(); // Lấy id khóa học từ URL
   const [course, setCourse] = useState(null); // Dữ liệu khóa học
   const [rating, setRating] = useState(0); // Đánh giá khóa học
+  const [reviews, setReviews] = useState([]); // Danh sách đánh giá
+  const [comment, setComment] = useState(""); // Nội dung bình luận
+  const [ratingValue, setRatingValue] = useState(0); // Số sao đánh giá
+  const [hoverValue, setHoverValue] = useState(0); // Số sao đang được rê chuột qua
+  const user = JSON.parse(localStorage.getItem("user")); // Lấy thông tin user từ localStorage
+  const userId = user?.id; // Lấy userId
+  const { id: courseId } = useParams(); // Lấy courseId từ URL
+  const [averageRating, setAverageRating] = useState(0); // Trung bình đánh giá
+  const [totalReviews, setTotalReviews] = useState(0); // Tổng số đánh giá
+  const [ratingPercents, setRatingPercents] = useState({
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+  });
 
   useEffect(() => {
     // Lấy thông tin chi tiết khóa học theo id
@@ -20,6 +38,118 @@ const CourseDetail = () => {
 
     fetchCourseDetail();
   }, [id]);
+
+  useEffect(() => {
+    // Fetch danh sách đánh giá khi tải trang
+    const fetchReviews = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/course-review/${id}`);
+        setReviews(response.data);
+        const allReviews = response.data;
+
+        const total_people_review = allReviews.length;
+        if (total_people_review > 0) {
+          setRatingPercents((preState) => {
+            const newState = { ...preState };
+
+            [1, 2, 3, 4, 5].forEach((count) => {
+              newState[count] = ((allReviews.filter((review) => review.rating === count).length / total_people_review) * 100).toFixed(0);
+            });
+            console.log(newState);
+
+            return newState;
+          });
+        }
+
+        // Tính toán trung bình đánh giá và số lượng đánh giá
+        const totalRating = allReviews.reduce((sum, allReview) => sum + allReview.rating, 0);
+        const reviewCount = allReviews.length;
+        setAverageRating(reviewCount > 0 ? (totalRating / reviewCount).toFixed(1) : 0); // Giới hạn 1 số thập phân
+        setTotalReviews(reviewCount);
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+      }
+    };
+
+    fetchReviews();
+  }, [id]);
+
+  const handleSubmitReview = async () => {
+    if (!comment.trim() || ratingValue === 0) {
+      Swal.fire({
+        icon: "error",
+        title: "Đánh giá không hợp lệ",
+        text: "Vui lòng nhập nội dung và chọn số sao trước khi gửi đánh giá.",
+      });
+      return;
+    }
+
+    try {
+      const response = await axios.post("http://localhost:8000/api/course-review/add", {
+        comment: comment,
+        rating: ratingValue,
+        createdAt: new Date().toISOString(), // Ngày giờ hiện tại
+        courseId: courseId, // ID khóa học
+        userId: userId, // ID người dùng
+      });
+
+      // Cập nhật danh sách đánh giá sau khi thêm thành công
+      setReviews([...reviews, response.data]);
+      setComment("");
+      setRatingValue(0);
+      Swal.fire({
+        icon: "success",
+        title: "Cảm ơn bạn!",
+        text: `Bạn đã đánh giá ${ratingValue} sao thành công.`,
+      });
+    } catch (error) {
+      console.error("Error submitting review:", error);
+    }
+  };
+
+  const formatRelativeTime = (dateArr) => {
+    if (!dateArr) return "Không rõ thời gian"; // Kiểm tra null hoặc undefined
+    const [year_input, month_input, day_input, hours_input, minutes_input, seconds_input] = dateArr;
+
+    const now = new Date();
+    const date = new Date(year_input, month_input - 1, day_input, hours_input, minutes_input, seconds_input);
+
+    if (isNaN(date.getTime())) {
+      return "Không rõ thời gian"; // Trả về nếu không phải là ngày hợp lệ
+    }
+
+    const diffInSeconds = Math.floor((now - date) / 1000);
+
+    if (diffInSeconds < 60) {
+      return `${diffInSeconds} giây trước`;
+    }
+
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    if (diffInMinutes < 60) {
+      return `${diffInMinutes} phút trước`;
+    }
+
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) {
+      return `${diffInHours} giờ trước`;
+    }
+
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays < 2) {
+      return `${diffInDays} ngày trước`;
+    }
+
+    // Nếu hơn 1 ngày, hiển thị định dạng hh:mm dd:mm:yyyy
+    const formatTwoDigits = (num) => (num < 10 ? `0${num}` : num);
+
+    const hours = formatTwoDigits(date.getHours());
+    const minutes = formatTwoDigits(date.getMinutes());
+    const day = formatTwoDigits(date.getDate());
+    const month = formatTwoDigits(date.getMonth() + 1); // Tháng bắt đầu từ 0
+    const year = date.getFullYear();
+
+    return `${hours}:${minutes} ${day}:${month}:${year}`;
+  };
 
   // Kiểm tra xem dữ liệu đã được tải xong chưa
   if (!course) return <div>Loading...</div>;
@@ -52,7 +182,7 @@ const CourseDetail = () => {
                 </div>
                 <div className="d-flex justify-content-between border-bottom px-4">
                   <h6 className="text-white my-3">Giảng viên</h6>
-                  <h6 className="text-white my-3">{course?.instructor.name}</h6>
+                  <h6 className="text-white my-3">{course?.instructor?.name}</h6>
                 </div>
 
                 <div className="d-flex justify-content-between border-bottom px-4">
@@ -85,14 +215,29 @@ const CourseDetail = () => {
             <h3>Đánh giá</h3>
             {/* Tổng quan đánh giá */}
             <div className="d-flex align-items-center my-4">
-              <div style={{ fontSize: "3rem", fontWeight: "bold", color: "#ffb400" }}>4.5</div>
+              <div style={{ fontSize: "3rem", fontWeight: "bold", color: "#ffb400" }}>{averageRating}</div>
               <div className="ml-4 mt-4">
                 <div className="d-flex align-items-center">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <i key={star} className={`fa fa-star ${star <= 4.5 ? "text-warning" : "text-secondary"}`} style={{ fontSize: "20px", marginRight: "2px" }} />
-                  ))}
+                  {[1, 2, 3, 4, 5].map((star) => {
+                    const isFullStar = star <= averageRating; // Sao đầy đủ
+                    const isHalfStar = star - 0.5 <= averageRating && star > averageRating; // Nửa sao
+
+                    return (
+                      <>
+                        {isHalfStar ? (
+                          <div style={{ position: "relative" }}>
+                            <i key={star} className="fa fa-star text-secondary" style={{ fontSize: "20px", marginRight: "2px" }} />
+                            <i key={star} className="fa fa-star-half text-warning" style={{ fontSize: "20px", marginRight: "2px", position: "absolute", inset: 0 }} />
+                          </div>
+                        ) : (
+                          <i key={star} className={`fa ${isFullStar ? "fa-star text-warning" : "fa-star text-secondary"}`} style={{ fontSize: "20px", marginRight: "2px" }} />
+                        )}
+                      </>
+                    );
+                  })}
                 </div>
-                <p className="text-muted">(136 đánh giá)</p>
+
+                <p className="text-muted">({totalReviews} đánh giá)</p>
               </div>
             </div>
 
@@ -112,48 +257,57 @@ const CourseDetail = () => {
                   >
                     <div
                       style={{
-                        width: `${[75, 11, 5, 2, 3][index]}%`,
+                        width: `${ratingPercents[star]}%`,
                         background: "#ffc107",
                         height: "100%",
                       }}
                     />
                   </div>
-                  <span>{[75, 11, 5, 2, 3][index]}%</span>
+                  <span>{ratingPercents[star]}%</span>
                 </div>
               ))}
             </div>
 
             {/* Form nhập đánh giá */}
             <div className="mb-5">
-              <textarea className="form-control mb-3" rows="3" placeholder="Đánh giá của bạn" />
+              <textarea className="form-control mb-3" rows="3" placeholder="Đánh giá của bạn" value={comment} onChange={(e) => setComment(e.target.value)} />
               <div className="d-flex align-items-center mb-3">
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <i key={star} className="fa fa-star text-secondary" style={{ cursor: "pointer", fontSize: "20px", marginRight: "5px" }} />
+                  <i
+                    key={star}
+                    className={`fa fa-star ${star <= (hoverValue || ratingValue) ? "text-danger" : "text-secondary"}`}
+                    style={{ cursor: "pointer", fontSize: "20px", marginRight: "5px" }}
+                    onMouseEnter={() => setHoverValue(star)} // Hiện đỏ khi rê chuột
+                    onMouseLeave={() => setHoverValue(0)} // Reset hiệu ứng khi rời chuột
+                    onClick={() => setRatingValue(star)} // Đánh dấu vàng khi bấm chọn
+                  />
                 ))}
               </div>
-              <button className="btn btn-primary">Gửi đánh giá</button>
+              <button className="btn btn-primary" onClick={handleSubmitReview}>
+                Gửi đánh giá
+              </button>
             </div>
 
             {/* Danh sách bình luận */}
-            <div className="mt-5">
-              <div className="media mb-4">
-                <img src="/assets2/img/user.jpg" alt="Image" className="img-fluid rounded-circle mr-3 mt-1" style={{ width: "45px" }} />
-                <div className="media-body">
-                  <h6>
-                    Hồ Phan Minh Tuấn{" "}
-                    <small>
-                      <i>30/11/2024 at 02:17am</i>
-                    </small>
-                  </h6>
-                  <div className="ml-auto">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <i key={star} className={`fa fa-star ${star <= 4 ? "text-warning" : "text-secondary"}`} style={{ fontSize: "16px" }} />
-                    ))}
+            {[...reviews].reverse().map((review) => (
+              <div className="mt-5" key={review.id}>
+                <div className="media mb-4">
+                  <img src={`${process.env.REACT_APP_API_URL}/${review.user?.avatar}`} alt="Image" className="img-fluid rounded-circle mr-3 mt-1" style={{ width: "45px" }} />
+                  <div className="media-body">
+                    <h6>
+                      {review.user?.fullname}
+                      <small className="ml-2">{formatRelativeTime(review.createdAt)}</small>
+                    </h6>
+                    <div className="ml-auto">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <i key={star} className={`fa fa-star ${star <= review.rating ? "text-warning" : "text-secondary"}`} style={{ fontSize: "16px" }} />
+                      ))}
+                    </div>
+                    <p className="mt-2">{review.comment}</p>
                   </div>
-                  <p className="mt-2">Khoá học hay, hiệu quả</p>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
           {/* Đánh giá end */}
         </div>
