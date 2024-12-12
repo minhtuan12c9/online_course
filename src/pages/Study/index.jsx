@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Header from "../../components/Header";
-import MenuAdmin from "../../components/MenuAdmin";
+import Menu from "../../components/Menu";
 import Footer from "../../components/Footer";
 import Sidebar from "../../components/Sidebar/index.jsx";
 
@@ -10,7 +10,7 @@ const Study = () => {
   return (
     <div>
       <Header />
-      <MenuAdmin />
+      <Menu />
       <div className="d-flex">
         <Sidebar setLessonContentActive={setLessonContentActive} />
         {/* <!-- Detail Start --> */}

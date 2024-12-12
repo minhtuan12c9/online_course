@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { format } from "date-fns";
 
@@ -24,7 +24,42 @@ const CourseDetail = () => {
     4: 0,
     5: 0,
   });
+  const [isRegisted, setIsRegisted] = useState(false);
 
+  // đăng ký khoá học
+  const registerUserCourseDetail = async () => {
+    try {
+      const response = await axios.post(`http://localhost:8000/api/user-course/add`, {
+        courseId: courseId, // ID khóa học
+        userId: userId, // ID người dùng
+        paymentStatus: 1,
+      });
+      Swal.fire({
+        icon: "success",
+        title: "Cảm ơn bạn!",
+        text: `Bạn đã đăng ký khoá học thành công.`,
+      });
+      setIsRegisted(true);
+    } catch (error) {
+      console.error("Error fetching course detail:", error);
+    }
+  };
+
+  // Lấy thôgn tin đăng ký khoá học
+  useEffect(() => {
+    // Lấy thông tin chi tiết khóa học theo id
+    const fetchUserCourseDetail = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/user-course/${id}/${userId}`);
+        setIsRegisted(!!response.data);
+      } catch (error) {
+        console.error("Error fetching course detail:", error);
+      }
+    };
+
+    fetchUserCourseDetail();
+  }, [id, userId]);
+  // Lấy thôgn tin khoá học
   useEffect(() => {
     // Lấy thông tin chi tiết khóa học theo id
     const fetchCourseDetail = async () => {
@@ -177,7 +212,7 @@ const CourseDetail = () => {
                 <div className="d-flex justify-content-between border-bottom px-4">
                   <h6 className="text-white my-3">Đánh giá</h6>
                   <h6 className="text-white my-3">
-                    4.5 <small>(250)</small>
+                    {averageRating} <small>({totalReviews})</small>
                   </h6>
                 </div>
                 <div className="d-flex justify-content-between border-bottom px-4">
@@ -203,9 +238,17 @@ const CourseDetail = () => {
                 </div>
                 <h5 className="text-white text-center py-3 px-4 m-0">Giá tiền: {course?.price} VNĐ</h5>
                 <div className="py-3 px-4">
-                  <a className="btn btn-block btn-secondary py-3 px-5" href="">
-                    Đăng ký ngay
-                  </a>
+                  {isRegisted ? (
+                    <NavLink to={`/hoc/${courseId}`}>
+                      <a className="btn btn-block btn-secondary py-3 px-5" href={`/course/${id}/learn`}>
+                        Vào học ngay
+                      </a>
+                    </NavLink>
+                  ) : (
+                    <button className="btn btn-block btn-secondary py-3 px-5" onClick={registerUserCourseDetail}>
+                      Đăng ký ngay
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
