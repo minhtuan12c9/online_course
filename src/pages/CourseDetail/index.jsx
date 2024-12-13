@@ -28,20 +28,75 @@ const CourseDetail = () => {
 
   // đăng ký khoá học
   const registerUserCourseDetail = async () => {
+    // try {
+    //   const response = await axios.post(`http://localhost:8000/api/user-course/add`, {
+    //     courseId: courseId, // ID khóa học
+    //     userId: userId, // ID người dùng
+    //     paymentStatus: 1,
+    //   });
+    //   Swal.fire({
+    //     icon: "success",
+    //     title: "Cảm ơn bạn!",
+    //     text: `Bạn đã đăng ký khoá học thành công.`,
+    //   });
+    //   setIsRegisted(true);
+    // } catch (error) {
+    //   console.error("Error fetching course detail:", error);
+    // }
     try {
-      const response = await axios.post(`http://localhost:8000/api/user-course/add`, {
-        courseId: courseId, // ID khóa học
-        userId: userId, // ID người dùng
-        paymentStatus: 1,
-      });
-      Swal.fire({
-        icon: "success",
-        title: "Cảm ơn bạn!",
-        text: `Bạn đã đăng ký khoá học thành công.`,
-      });
-      setIsRegisted(true);
+      // Gửi yêu cầu lấy thông tin chi tiết khóa học
+      const response = await axios.get(`http://localhost:8000/api/course/${id}`);
+      const course = response.data;
+
+      if (!course) {
+        Swal.fire("Lỗi", "Không thể tìm thấy khóa học", "error");
+        return;
+      }
+
+      if (course.price > 0) {
+        // Hiển thị thông báo yêu cầu xác nhận thanh toán
+        const result = await Swal.fire({
+          title: "Thanh toán khóa học",
+          text: `Khóa học này có giá ${course.price} VNĐ. Bạn có muốn thanh toán không?`,
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: "Thanh toán",
+          cancelButtonText: "Hủy",
+        });
+
+        if (result.isConfirmed) {
+          // Nếu người dùng đồng ý, tiếp tục đăng ký và xử lý thanh toán
+          const registerResponse = await axios.post(`http://localhost:8000/api/user-course/add`, {
+            courseId: courseId, // ID khóa học
+            userId: userId, // ID người dùng
+            paymentStatus: 1,
+          });
+
+          if (registerResponse.status === 200) {
+            Swal.fire("Thành công", "Bạn đã đăng ký thành công khóa học", "success");
+            setIsRegisted(true);
+          } else {
+            Swal.fire("Lỗi", "Đăng ký khóa học không thành công", "error");
+          }
+        }
+      } else {
+        // Nếu khóa học miễn phí, tiến hành đăng ký trực tiếp
+        const registerResponse = await axios.post(`http://localhost:8000/api/user-course/add`, {
+          courseId: id,
+          userId: userId,
+          paymentStatus: 1,
+        });
+
+        if (registerResponse.status === 200) {
+          Swal.fire("Thành công", "Bạn đã đăng ký thành công khóa học miễn phí", "success");
+          setIsRegisted(true);
+        } else {
+          Swal.fire("Lỗi", "Đăng ký khóa học không thành công", "error");
+        }
+      }
     } catch (error) {
-      console.error("Error fetching course detail:", error);
+      console.error("Error during course registration:", error);
+      Swal.fire("Lỗi", "Đã xảy ra lỗi khi đăng ký khóa học", "error");
     }
   };
 

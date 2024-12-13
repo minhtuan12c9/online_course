@@ -14,6 +14,7 @@ import Teachers from "./pages/Teachers";
 import AdminChapter from "./pages/Admin/AdminChapter";
 import AdminAddLessonContent from "./pages/Admin/AdminAddLessonContent";
 import CoursesSearch from "./pages/CourseSearch";
+import Payment from "./pages/Payment";
 
 export const mainRouters = [
   {
@@ -89,6 +90,11 @@ export const mainRouters = [
   {
     path: "/timkiemkhoahoc",
     component: CoursesSearch,
+    layout: MainLayout,
+  },
+  {
+    path: "/thanhtoan",
+    component: Payment,
     layout: MainLayout,
   },
 ];
