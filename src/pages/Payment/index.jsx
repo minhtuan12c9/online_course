@@ -1,59 +1,53 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import Header from "../../components/Header";
+import Menu from "../../components/Menu";
+import Footer from "../../components/Footer";
+import { NavLink } from "react-router-dom";
 
 const Payment = () => {
+  const [txnRef, setTxnRef] = useState("");
+  const location = useLocation();
+
+  useEffect(() => {
+    // Lấy mã giao dịch từ query string trong URL
+    const searchParams = new URLSearchParams(location.search);
+    const vnp_TxnRef = searchParams.get("vnp_TxnRef");
+    if (vnp_TxnRef) {
+      setTxnRef(vnp_TxnRef);
+    }
+  }, [location.search]);
+
   return (
-    <div className="container mt-5">
-      {/* Header */}
-      <div className="text-center mb-4">
-        <h2>ZaloPay</h2>
-        <p className="text-muted">Thanh toán nhanh chóng, an toàn</p>
-      </div>
-
-      {/* Payment Form */}
-      <div className="card shadow-sm">
-        <div className="card-body">
-          <h5 className="card-title">Thông tin thanh toán</h5>
-
-          {/* Số tiền thanh toán */}
-          <div className="mb-3">
-            <label htmlFor="amount" className="form-label">
-              Số tiền
-            </label>
-            <input type="number" className="form-control" id="amount" placeholder="Nhập số tiền" />
+    <div className="">
+      <Header />
+      <Menu />
+      <div className="d-flex justify-content-center align-items-center " style={{ marginTop: "75px" }}>
+        <div className="card shadow-lg text-center" style={{ maxWidth: "1000px" }}>
+          <div className="card-body" style={{ width: "1000px", fontSize: "25px" }}>
+            <div className="mb-3 text-success">
+              <i className="fa fa-check-circle fa-3x" aria-hidden="true"></i>
+            </div>
+            <h3 className="card-title ">Thanh toán thành công</h3>
+            <h5 className="card-text">
+              Mã số hoá đơn của bạn là <span className="text-success">{txnRef}</span>.
+            </h5>
+            <h5 className="card-text">
+              Bạn có thể xem chi tiết trong{" "}
+              <NavLink to="/khoahoccuatoi">
+                <a href="/orders" className="text-primary text-decoration-underline">
+                  Khoá học của tôi
+                </a>
+              </NavLink>
+            </h5>
+            <h5 className="">Cảm ơn bạn đã ủng hộ</h5>
+            <NavLink to="/">
+              <button className="btn btn-primary mt-2 fs-1">Quay về trang chủ</button>
+            </NavLink>
           </div>
-
-          {/* Phương thức thanh toán */}
-          <div className="mb-3">
-            <label htmlFor="paymentMethod" className="form-label">
-              Phương thức thanh toán
-            </label>
-            <select className="form-select" id="paymentMethod">
-              <option value="">Chọn phương thức</option>
-              <option value="zalopay">ZaloPay</option>
-              <option value="credit">Thẻ tín dụng</option>
-              <option value="bank">Ngân hàng</option>
-            </select>
-          </div>
-
-          {/* Mã khuyến mãi */}
-          <div className="mb-3">
-            <label htmlFor="promoCode" className="form-label">
-              Mã khuyến mãi
-            </label>
-            <input type="text" className="form-control" id="promoCode" placeholder="Nhập mã nếu có" />
-          </div>
-
-          {/* Nút thanh toán */}
-          <button type="button" className="btn btn-primary w-100">
-            Thanh toán
-          </button>
         </div>
       </div>
-
-      {/* Footer */}
-      <div className="text-center mt-4">
-        <p className="text-muted">&copy; 2024 ZaloPay. All rights reserved.</p>
-      </div>
+      <Footer />
     </div>
   );
 };

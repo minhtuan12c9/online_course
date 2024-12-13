@@ -28,21 +28,6 @@ const CourseDetail = () => {
 
   // đăng ký khoá học
   const registerUserCourseDetail = async () => {
-    // try {
-    //   const response = await axios.post(`http://localhost:8000/api/user-course/add`, {
-    //     courseId: courseId, // ID khóa học
-    //     userId: userId, // ID người dùng
-    //     paymentStatus: 1,
-    //   });
-    //   Swal.fire({
-    //     icon: "success",
-    //     title: "Cảm ơn bạn!",
-    //     text: `Bạn đã đăng ký khoá học thành công.`,
-    //   });
-    //   setIsRegisted(true);
-    // } catch (error) {
-    //   console.error("Error fetching course detail:", error);
-    // }
     try {
       // Gửi yêu cầu lấy thông tin chi tiết khóa học
       const response = await axios.get(`http://localhost:8000/api/course/${id}`);
@@ -62,22 +47,30 @@ const CourseDetail = () => {
           showCancelButton: true,
           confirmButtonText: "Thanh toán",
           cancelButtonText: "Hủy",
+          preConfirm: async () => {
+            try {
+              // Gửi yêu cầu lấy link thanh toán từ backend
+              const paymentResponse = await axios.get(`http://localhost:8000/api/payment/pay`, {
+                params: { amount: course.price },
+              });
+
+              // Trả về link thanh toán nếu có
+              if (paymentResponse.data) {
+                return paymentResponse.data;
+              } else {
+                throw new Error("Không lấy được link thanh toán");
+              }
+            } catch (error) {
+              console.error("Error during payment link retrieval:", error);
+              Swal.showValidationMessage("Không thể tạo link thanh toán. Vui lòng thử lại!");
+              return null;
+            }
+          },
         });
-
-        if (result.isConfirmed) {
-          // Nếu người dùng đồng ý, tiếp tục đăng ký và xử lý thanh toán
-          const registerResponse = await axios.post(`http://localhost:8000/api/user-course/add`, {
-            courseId: courseId, // ID khóa học
-            userId: userId, // ID người dùng
-            paymentStatus: 1,
-          });
-
-          if (registerResponse.status === 200) {
-            Swal.fire("Thành công", "Bạn đã đăng ký thành công khóa học", "success");
-            setIsRegisted(true);
-          } else {
-            Swal.fire("Lỗi", "Đăng ký khóa học không thành công", "error");
-          }
+        if (result.value) {
+          // Mở link thanh toán VNPay
+          // window.location.href = result.value;
+          window.open(result.value, "_blank");
         }
       } else {
         // Nếu khóa học miễn phí, tiến hành đăng ký trực tiếp
@@ -96,7 +89,7 @@ const CourseDetail = () => {
       }
     } catch (error) {
       console.error("Error during course registration:", error);
-      Swal.fire("Lỗi", "Đã xảy ra lỗi khi đăng ký khóa học", "error");
+      Swal.fire("Lỗi", "Bạn phải đăng nhập trước đã!", "error");
     }
   };
 

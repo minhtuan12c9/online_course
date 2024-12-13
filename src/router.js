@@ -95,6 +95,6 @@ export const mainRouters = [
   {
     path: "/thanhtoan",
     component: Payment,
-    layout: MainLayout,
+    layout: null,
   },
 ];
