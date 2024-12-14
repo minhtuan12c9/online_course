@@ -15,6 +15,7 @@ import AdminChapter from "./pages/Admin/AdminChapter";
 import AdminAddLessonContent from "./pages/Admin/AdminAddLessonContent";
 import CoursesSearch from "./pages/CourseSearch";
 import Payment from "./pages/Payment";
+import InfoUser from "./pages/InfoUser";
 
 export const mainRouters = [
   {
@@ -95,6 +96,11 @@ export const mainRouters = [
   {
     path: "/thanhtoan",
     component: Payment,
+    layout: null,
+  },
+  {
+    path: "/thongtincanhan",
+    component: InfoUser,
     layout: null,
   },
 ];
