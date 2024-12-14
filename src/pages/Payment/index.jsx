@@ -1,20 +1,49 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import Menu from "../../components/Menu";
-import Footer from "../../components/Footer";
-import { NavLink } from "react-router-dom";
 
 const Payment = () => {
   const [txnRef, setTxnRef] = useState("");
   const location = useLocation();
+  const user = JSON.parse(localStorage.getItem("user")); // Lấy thông tin user từ localStorage
+  const userId = user?.id; // Lấy userId
+  const [courseId, setCourseId] = useState();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (courseId) {
+      const registerCourse = async () => {
+        const response = await axios.get(`http://localhost:8000/api/user-course/${courseId}/${userId}`);
+        if (response.data) return;
+
+        await axios.post(`http://localhost:8000/api/user-course/add`, {
+          courseId: courseId,
+          userId: userId,
+          paymentStatus: 1,
+        });
+      };
+      registerCourse();
+    }
+  }, [courseId]);
 
   useEffect(() => {
     // Lấy mã giao dịch từ query string trong URL
     const searchParams = new URLSearchParams(location.search);
+    if (searchParams.size === 0) {
+      navigate("/");
+    }
+
     const vnp_TxnRef = searchParams.get("vnp_TxnRef");
     if (vnp_TxnRef) {
       setTxnRef(vnp_TxnRef);
+    }
+
+    const vnp_OrderInfo = searchParams.get("vnp_OrderInfo");
+    if (vnp_OrderInfo) {
+      setCourseId(parseInt(vnp_OrderInfo.split(":")[1]));
     }
   }, [location.search]);
 

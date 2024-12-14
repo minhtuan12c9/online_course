@@ -51,7 +51,7 @@ const CourseDetail = () => {
             try {
               // Gửi yêu cầu lấy link thanh toán từ backend
               const paymentResponse = await axios.get(`http://localhost:8000/api/payment/pay`, {
-                params: { amount: course.price },
+                params: { amount: course.price, courseId: courseId },
               });
 
               // Trả về link thanh toán nếu có
@@ -69,8 +69,7 @@ const CourseDetail = () => {
         });
         if (result.value) {
           // Mở link thanh toán VNPay
-          // window.location.href = result.value;
-          window.open(result.value, "_blank");
+          window.location.href = result.value;
         }
       } else {
         // Nếu khóa học miễn phí, tiến hành đăng ký trực tiếp
