@@ -1,11 +1,49 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../components/Header";
 import Menu from "../../components/Menu";
 import Footer from "../../components/Footer";
 import Sidebar from "../../components/Sidebar/index.jsx";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const Study = () => {
   const [lessonContentActive, setLessonContentActive] = useState(null);
+  console.log(lessonContentActive);
+  const lessonId = lessonContentActive?.id;
+  const user = JSON.parse(localStorage.getItem("user")); // Lấy thông tin user từ localStorage
+  const userId = user?.id; // Lấy userId
+
+  useEffect(() => {
+    if (!userId || !lessonId) return;
+    let intervalId;
+
+    // Function to call API
+    const fetchApi = async () => {
+      try {
+        const response = await axios.put(`http://localhost:8000/api/user-progress/update/${userId}/${lessonId}`, { timeSpentMinutes: 1 });
+        const message = response.data;
+        if (message === "Completed") {
+          Swal.fire({
+            icon: "success",
+            title: "Hoàn thành!",
+            text: `Bạn đã học xong bài học này!`,
+          });
+          console.log("Task completed, stopping polling.");
+          clearInterval(intervalId); // Stop the interval
+        }
+      } catch (error) {
+        console.error("Error calling API:", error);
+      }
+    };
+
+    // Set up interval for API calls
+    intervalId = setInterval(() => {
+      fetchApi();
+    }, 60000); // Call every 1 minute
+
+    // Cleanup: Stop interval on unmount
+    return () => clearInterval(intervalId);
+  }, [lessonId]);
 
   return (
     <div>

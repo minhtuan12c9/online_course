@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const Menu = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const navigate = useNavigate();
 
   // Kiểm tra trạng thái đăng nhập
   useEffect(() => {
@@ -20,7 +21,9 @@ const Menu = () => {
     localStorage.removeItem("user");
     setIsLoggedIn(false);
     setCurrentUser(null);
-    Swal.fire("Đăng xuất", "Bạn đã đăng xuất thành công!", "success");
+    Swal.fire("Đăng xuất", "Bạn đã đăng xuất thành công!", "success").then(() => {
+      navigate("/");
+    });
   };
 
   const toggleDropdown = () => {

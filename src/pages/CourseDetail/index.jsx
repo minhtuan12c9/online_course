@@ -40,36 +40,45 @@ const CourseDetail = () => {
 
       if (course.price > 0) {
         // Hiển thị thông báo yêu cầu xác nhận thanh toán
-        const result = await Swal.fire({
-          title: "Thanh toán khóa học",
-          text: `Khóa học này có giá ${course.price} VNĐ. Bạn có muốn thanh toán không?`,
-          icon: "question",
-          showCancelButton: true,
-          confirmButtonText: "Thanh toán",
-          cancelButtonText: "Hủy",
-          preConfirm: async () => {
-            try {
-              // Gửi yêu cầu lấy link thanh toán từ backend
-              const paymentResponse = await axios.get(`http://localhost:8000/api/payment/pay`, {
-                params: { amount: course.price, courseId: courseId },
-              });
+        if (user?.id) {
+          const result = await Swal.fire({
+            title: "Thanh toán khóa học",
+            text: `Khóa học này có giá ${course.price} VNĐ. Bạn có muốn thanh toán không?`,
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Thanh toán",
+            cancelButtonText: "Hủy",
+            preConfirm: async () => {
+              try {
+                // Gửi yêu cầu lấy link thanh toán từ backend
+                const paymentResponse = await axios.get(`http://localhost:8000/api/payment/pay`, {
+                  params: { amount: course.price, courseId: courseId },
+                });
 
-              // Trả về link thanh toán nếu có
-              if (paymentResponse.data) {
-                return paymentResponse.data;
-              } else {
-                throw new Error("Không lấy được link thanh toán");
+                // Trả về link thanh toán nếu có
+                if (paymentResponse.data) {
+                  return paymentResponse.data;
+                } else {
+                  throw new Error("Không lấy được link thanh toán");
+                }
+              } catch (error) {
+                console.error("Error during payment link retrieval:", error);
+                Swal.showValidationMessage("Không thể tạo link thanh toán. Vui lòng thử lại!");
+                return null;
               }
-            } catch (error) {
-              console.error("Error during payment link retrieval:", error);
-              Swal.showValidationMessage("Không thể tạo link thanh toán. Vui lòng thử lại!");
-              return null;
-            }
-          },
-        });
-        if (result.value) {
-          // Mở link thanh toán VNPay
-          window.location.href = result.value;
+            },
+          });
+          if (result.value) {
+            // Mở link thanh toán VNPay
+            window.location.href = result.value;
+          }
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Thông tin không hợp lệ!",
+            text: "Bạn hãy vui lòng đăng nhập trước!",
+          });
+          return;
         }
       } else {
         // Nếu khóa học miễn phí, tiến hành đăng ký trực tiếp
@@ -88,7 +97,11 @@ const CourseDetail = () => {
       }
     } catch (error) {
       console.error("Error during course registration:", error);
-      Swal.fire("Lỗi", "Bạn phải đăng nhập trước đã!", "error");
+      Swal.fire({
+        icon: "error",
+        title: "Thông tin không hợp lệ!",
+        text: "Bạn hãy vui lòng đăng nhập trước!",
+      });
     }
   };
 
@@ -273,7 +286,7 @@ const CourseDetail = () => {
                 </div>
                 <div className="d-flex justify-content-between border-bottom px-4">
                   <h6 className="text-white my-3">Thời lượng học</h6>
-                  <h6 className="text-white my-3">{course.totalDurationMinutes} giờ</h6>
+                  <h6 className="text-white my-3">{course.totalDurationMinutes} phút</h6>
                 </div>
                 <div className="d-flex justify-content-between border-bottom px-4">
                   <h6 className="text-white my-3">Số học viên</h6>

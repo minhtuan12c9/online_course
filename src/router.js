@@ -54,7 +54,7 @@ export const mainRouters = [
     layout: MainLayout,
   },
   {
-    path: "/hoc/:id",
+    path: "/hoc/:id/",
     component: Study,
     layout: null,
   },
