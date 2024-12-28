@@ -170,6 +170,14 @@ const CourseDetail = () => {
   }, [id]);
 
   const handleSubmitReview = async () => {
+    if (!isRegisted) {
+      Swal.fire({
+        icon: "error",
+        title: "Không thể đánh giá",
+        text: "Bạn cần đăng ký khóa học trước khi đánh giá.",
+      });
+      return;
+    }
     if (!comment.trim() || ratingValue === 0) {
       Swal.fire({
         icon: "error",
@@ -196,6 +204,8 @@ const CourseDetail = () => {
         icon: "success",
         title: "Cảm ơn bạn!",
         text: `Bạn đã đánh giá ${ratingValue} sao thành công.`,
+      }).then(() => {
+        window.location.reload();
       });
     } catch (error) {
       console.error("Error submitting review:", error);

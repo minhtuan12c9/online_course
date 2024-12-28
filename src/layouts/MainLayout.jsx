@@ -5,6 +5,13 @@ import Menu from "../components/Menu";
 import Search from "../components/Search";
 
 const MainLayout = ({ children }) => {
+  // useEffect(() => {
+  //   const element = document.getElementById("content");
+  //   if (element) {
+  //     element.scrollIntoView({ behavior: "smooth", block: "start" });
+  //   }
+  // }, []);
+
   return (
     <div className="relative ">
       <Header />
