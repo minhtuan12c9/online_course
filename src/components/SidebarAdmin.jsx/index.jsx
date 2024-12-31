@@ -26,6 +26,39 @@ const SidebarAdmin = ({ setLessonContentActive }) => {
     setSelectedLesson(selectedLesson === lessonIndex ? null : lessonIndex);
   };
 
+  // Xoá bài học
+  const handleDeleteLesson = async (lessonId) => {
+    try {
+      // Hiển thị xác nhận trước khi xóa
+      const result = await Swal.fire({
+        title: "Bạn có chắc chắn?",
+        text: "Hành động này sẽ xóa bài học và không thể hoàn tác!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Xóa",
+        cancelButtonText: "Hủy",
+      });
+
+      if (result.isConfirmed) {
+        // Gọi API xóa bài học
+        await axios.delete(`http://localhost:8000/api/lesson/remove/${lessonId}`);
+
+        // Cập nhật danh sách bài học sau khi xóa thành công
+        setLessons((prevLessons) => prevLessons.filter((lesson) => lesson.id !== lessonId));
+
+        // Hiển thị thông báo thành công và reload lại trang sau khi người dùng nhấn OK
+        Swal.fire("Đã xóa!", "Bài học đã được xóa.", "success").then(() => {
+          window.location.reload(); // Reload lại trang
+        });
+      }
+    } catch (error) {
+      console.error("Error deleting lesson:", error);
+      Swal.fire("Lỗi!", "Xảy ra lỗi khi xóa bài học. Vui lòng thử lại.", "error");
+    }
+  };
+
   // Fetch danh sách chương từ API
   useEffect(() => {
     const fetchChapters = async () => {
@@ -275,7 +308,7 @@ const SidebarAdmin = ({ setLessonContentActive }) => {
                         <button className="btn btn-warning mb-2" onClick={() => console.log("Sửa bài học", lesson.id)}>
                           Sửa
                         </button>
-                        <button className="btn btn-danger" onClick={() => console.log("Xóa bài học", lesson.id)}>
+                        <button className="btn btn-danger" onClick={() => handleDeleteLesson(lesson.id)}>
                           Xóa
                         </button>
                       </div>
