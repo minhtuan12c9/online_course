@@ -218,7 +218,7 @@ const SidebarAdmin = ({ setLessonContentActive }) => {
 
   return (
     <div style={styles.accordion}>
-      <button className="btn btn-success rounded-pill mb-3" onClick={() => setShowModal(true)}>
+      <button className="btn btn-success rounded-pill mb-3" style={{ fontWeight: "bold" }} onClick={() => setShowModal(true)}>
         + Thêm chương mới
       </button>
 
@@ -283,7 +283,15 @@ const SidebarAdmin = ({ setLessonContentActive }) => {
           </button>
           {activeAccordion === index && (
             <div className="d-flex flex-column" style={{ padding: "10px", backgroundColor: "#f8f9fa" }}>
-              <button className="btn btn-success rounded-pill mb-3" onClick={() => setShowModal2(true)}>
+              <div className="d-flex justify-content-center w-100">
+                <button className="btn btn-info rounded-pill mb-3 mr-2" style={{ fontWeight: "bold" }} onClick={() => setShowModal2(true)}>
+                  <img className="mr-1 mb-1" src="/assets2/icons/edit.png" style={{ width: "25px" }} alt="" /> Sửa chương
+                </button>
+                <button className="btn btn-danger rounded-pill mb-3" style={{ fontWeight: "bold" }} onClick={() => setShowModal2(true)}>
+                  <img className="mr-1 mb-1" src="/assets2/icons/delete.png" style={{ width: "25px" }} alt="" /> Xoá chương
+                </button>
+              </div>
+              <button className="btn btn-success rounded-pill mb-3" style={{ fontWeight: "bold" }} onClick={() => setShowModal2(true)}>
                 + Thêm bài học mới
               </button>
               {/* Danh sách bài học */}
@@ -306,10 +314,10 @@ const SidebarAdmin = ({ setLessonContentActive }) => {
                           Thêm
                         </button>
                         <button className="btn btn-warning mb-2" onClick={() => console.log("Sửa bài học", lesson.id)}>
-                          Sửa
+                          Sửa bài học
                         </button>
                         <button className="btn btn-danger" onClick={() => handleDeleteLesson(lesson.id)}>
-                          Xóa
+                          Xóa bài học
                         </button>
                       </div>
                     )}

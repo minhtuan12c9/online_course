@@ -4,7 +4,7 @@ import { useLocation, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 
-const Sidebar = ({ setLessonContentActive }) => {
+const Sidebar = ({ setLessonContentActive, setLessonActive }) => {
   const [activeAccordion, setActiveAccordion] = useState(null); // Trạng thái accordion
   const [showModal, setShowModal] = useState(false); // Trạng thái hiển thị modal
   const [showModal2, setShowModal2] = useState(false); // Trạng thái hiển thị modal
@@ -18,6 +18,9 @@ const Sidebar = ({ setLessonContentActive }) => {
   const navigate = useNavigate();
   const [reloadKey, setReloadKey] = useState(0);
   const [selectedLesson, setSelectedLesson] = useState(null); // Trạng thái bài học được chọn
+  const user = JSON.parse(localStorage.getItem("user")); // Lấy thông tin user từ localStorage
+  const userId = user?.id; // Lấy userId
+  const [userProgresses, setUserProgresses] = useState([]);
 
   const handleAddContentRedirect = (lessonId) => {
     navigate(`/adminaddlessoncontent/${lessonId}`);
@@ -25,6 +28,19 @@ const Sidebar = ({ setLessonContentActive }) => {
   const toggleLessonOptions = (lessonIndex) => {
     setSelectedLesson(selectedLesson === lessonIndex ? null : lessonIndex);
   };
+  // Fetch danh sách user progress
+  useEffect(() => {
+    const fetchUserProgresses = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/user-progress/${userId}/${parseInt(params.id)}`); // API endpoint
+        setUserProgresses(response.data); // Gán dữ liệu chương vào state
+      } catch (error) {
+        console.error("Error fetching chapters:", error);
+      }
+    };
+
+    fetchUserProgresses();
+  }, [activeAccordion, reloadKey]);
 
   // Fetch danh sách chương từ API
   useEffect(() => {
@@ -202,11 +218,12 @@ const Sidebar = ({ setLessonContentActive }) => {
                       onClick={() => {
                         toggleLessonOptions(lessonIndex);
                         setLessonContentActive(lesson.lessonContents[0]);
+                        setLessonActive(lesson);
                       }}
                       style={{ fontSize: "15px", borderRadius: "10px", marginBottom: "10px" }}
-                      className="p-2 btn btn-light"
+                      className="p-2 btn btn-light w-75"
                     >
-                      {lesson.name} - {lesson.durationMinutes} phút
+                      {lesson.name} - {lesson.durationMinutes} phút {userProgresses.length > 0 && userProgresses.find((i) => i.lessonId === lesson.id)?.isUnlock === 0 && <img className="ml-2 mb-1" style={{ width: "20px" }} src="/assets2/icons/lock.png" alt="" />}
                     </button>
                   </div>
                 ))

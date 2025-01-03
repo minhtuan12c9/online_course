@@ -8,19 +8,18 @@ import Swal from "sweetalert2";
 
 const Study = () => {
   const [lessonContentActive, setLessonContentActive] = useState(null);
-  console.log(lessonContentActive);
-  const lessonId = lessonContentActive?.id;
+  const [lessonActive, setLessonActive] = useState(null);
   const user = JSON.parse(localStorage.getItem("user")); // Lấy thông tin user từ localStorage
   const userId = user?.id; // Lấy userId
 
   useEffect(() => {
-    if (!userId || !lessonId) return;
+    if (!userId || !lessonActive) return;
     let intervalId;
 
     // Function to call API
     const fetchApi = async () => {
       try {
-        const response = await axios.put(`http://localhost:8000/api/user-progress/update/${userId}/${lessonId}`, { timeSpentMinutes: 1 });
+        const response = await axios.put(`http://localhost:8000/api/user-progress/update/${userId}/${lessonActive.id}`, { timeSpentMinutes: 1 });
         const message = response.data;
         if (message === "Completed") {
           Swal.fire({
@@ -43,14 +42,14 @@ const Study = () => {
 
     // Cleanup: Stop interval on unmount
     return () => clearInterval(intervalId);
-  }, [lessonId]);
+  }, [lessonActive]);
 
   return (
     <div>
       <Header />
       <Menu />
       <div className="d-flex">
-        <Sidebar setLessonContentActive={setLessonContentActive} />
+        <Sidebar setLessonContentActive={setLessonContentActive} setLessonActive={setLessonActive} />
         {/* <!-- Detail Start --> */}
         <div className="container-fluid py-5">
           <div className="container py-5">
