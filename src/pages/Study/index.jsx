@@ -11,6 +11,7 @@ const Study = () => {
   const [lessonActive, setLessonActive] = useState(null);
   const user = JSON.parse(localStorage.getItem("user")); // Lấy thông tin user từ localStorage
   const userId = user?.id; // Lấy userId
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     if (!userId || !lessonActive) return;
@@ -28,6 +29,7 @@ const Study = () => {
             text: `Bạn đã học xong bài học này!`,
           });
           console.log("Task completed, stopping polling.");
+          setReloadKey((prev) => prev + 1);
           clearInterval(intervalId); // Stop the interval
         }
       } catch (error) {
@@ -49,7 +51,7 @@ const Study = () => {
       <Header />
       <Menu />
       <div className="d-flex">
-        <Sidebar setLessonContentActive={setLessonContentActive} setLessonActive={setLessonActive} />
+        <Sidebar setLessonContentActive={setLessonContentActive} setLessonActive={setLessonActive} lessonActive={lessonActive} reloadChildKey={reloadKey} />
         {/* <!-- Detail Start --> */}
         <div className="container-fluid py-5">
           <div className="container py-5">
@@ -63,57 +65,6 @@ const Study = () => {
                 </div>
               </div>
             </div>
-            {/* Đánh giá */}
-            <div className="mt-5">
-              <h3>Bình luận</h3>
-
-              {/* Form nhập đánh giá */}
-              <div className="mb-5">
-                <textarea className="form-control mb-3" rows="3" placeholder="Người tiện tay vẽ hoa vẽ lá, tôi đa tình tưởng đó là mùa xuân..." />
-
-                <button className="btn btn-primary">Gửi bình luận</button>
-              </div>
-
-              {/* Danh sách bình luận */}
-              <div className="mt-5">
-                <div className="media mb-4">
-                  <img src="/assets2/img/user.jpg" alt="Image" className="img-fluid rounded-circle mr-3 mt-1" style={{ width: "45px" }} />
-                  <div className="media-body">
-                    <h6>
-                      Hồ Phan Minh Tuấn{" "}
-                      <small>
-                        <i>30/11/2024 at 02:25pm</i>
-                      </small>
-                    </h6>
-                    <div className="ml-auto">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <i key={star} className={`fa fa-star ${star <= 4 ? "text-warning" : "text-secondary"}`} style={{ fontSize: "16px" }} />
-                      ))}
-                    </div>
-                    <p className="mt-2">Khoá học hay, hiệu quả</p>
-                  </div>
-                </div>
-
-                {/* <div className="media mb-4">
-                  <img src="/assets2/img/user.jpg" alt="Image" className="img-fluid rounded-circle mr-3 mt-1" style={{ width: "45px" }} />
-                  <div className="media-body">
-                    <h6>
-                      Tiến Lợi{" "}
-                      <small>
-                        <i>30/11/2024 at 02:30pm</i>
-                      </small>
-                    </h6>
-                    <div className="ml-auto">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <i key={star} className={`fa fa-star ${star <= 4 ? "text-warning" : "text-secondary"}`} style={{ fontSize: "16px" }} />
-                      ))}
-                    </div>
-                    <p className="mt-2">Hay</p>
-                  </div>
-                </div> */}
-              </div>
-            </div>
-            {/* Đánh giá end */}
           </div>
         </div>
         {/* <!-- Detail End --> */}

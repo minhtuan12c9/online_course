@@ -26,6 +26,37 @@ const SidebarAdmin = ({ setLessonContentActive }) => {
     setSelectedLesson(selectedLesson === lessonIndex ? null : lessonIndex);
   };
 
+  // Xoá chương
+  const handleDeleteChapter = async (chapterId) => {
+    try {
+      // Hiển thị xác nhận trước khi xóa
+      const result = await Swal.fire({
+        title: "Bạn có chắc chắn?",
+        text: "Hành động này sẽ xóa chương và tất cả bài học liên quan, không thể hoàn tác!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Xóa",
+        cancelButtonText: "Hủy",
+      });
+
+      if (result.isConfirmed) {
+        // Gọi API xóa chương
+        await axios.delete(`http://localhost:8000/api/chapter/remove/${chapterId}`);
+
+        // Cập nhật danh sách chương sau khi xóa thành công
+        setChapters((prevChapters) => prevChapters.filter((chapter) => chapter.id !== chapterId));
+
+        // Hiển thị thông báo thành công
+        Swal.fire("Đã xóa!", "Chương đã được xóa.", "success");
+      }
+    } catch (error) {
+      console.error("Error deleting chapter:", error);
+      Swal.fire("Lỗi!", "Xảy ra lỗi khi xóa chương. Vui lòng thử lại.", "error");
+    }
+  };
+
   // Xoá bài học
   const handleDeleteLesson = async (lessonId) => {
     try {
@@ -218,6 +249,15 @@ const SidebarAdmin = ({ setLessonContentActive }) => {
 
   return (
     <div style={styles.accordion}>
+      <div className="d-flex justify-content-center">
+        <button className="btn btn-info rounded-pill mb-3 mr-2" style={{ fontWeight: "bold" }} onClick={() => setShowModal2(true)}>
+          <img className="mr-1 mb-1" src="/assets2/icons/edit.png" style={{ width: "25px" }} alt="" /> Sửa khoá học
+        </button>
+        <button className="btn btn-danger rounded-pill mb-3" style={{ fontWeight: "bold" }} onClick={() => handleDeleteChapter()}>
+          <img className="mr-1 mb-1" src="/assets2/icons/delete.png" style={{ width: "25px" }} alt="" /> Xoá khoá học
+        </button>
+      </div>
+
       <button className="btn btn-success rounded-pill mb-3" style={{ fontWeight: "bold" }} onClick={() => setShowModal(true)}>
         + Thêm chương mới
       </button>
@@ -287,7 +327,7 @@ const SidebarAdmin = ({ setLessonContentActive }) => {
                 <button className="btn btn-info rounded-pill mb-3 mr-2" style={{ fontWeight: "bold" }} onClick={() => setShowModal2(true)}>
                   <img className="mr-1 mb-1" src="/assets2/icons/edit.png" style={{ width: "25px" }} alt="" /> Sửa chương
                 </button>
-                <button className="btn btn-danger rounded-pill mb-3" style={{ fontWeight: "bold" }} onClick={() => setShowModal2(true)}>
+                <button className="btn btn-danger rounded-pill mb-3" style={{ fontWeight: "bold" }} onClick={() => handleDeleteChapter(chapter.id)}>
                   <img className="mr-1 mb-1" src="/assets2/icons/delete.png" style={{ width: "25px" }} alt="" /> Xoá chương
                 </button>
               </div>

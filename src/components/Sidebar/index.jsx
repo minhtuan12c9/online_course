@@ -4,7 +4,7 @@ import { useLocation, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 
-const Sidebar = ({ setLessonContentActive, setLessonActive }) => {
+const Sidebar = ({ setLessonContentActive, setLessonActive, lessonActive, reloadChildKey }) => {
   const [activeAccordion, setActiveAccordion] = useState(null); // Trạng thái accordion
   const [showModal, setShowModal] = useState(false); // Trạng thái hiển thị modal
   const [showModal2, setShowModal2] = useState(false); // Trạng thái hiển thị modal
@@ -41,6 +41,10 @@ const Sidebar = ({ setLessonContentActive, setLessonActive }) => {
 
     fetchUserProgresses();
   }, [activeAccordion, reloadKey]);
+
+  useEffect(() => {
+    if (reloadChildKey) setReloadKey((prev) => prev + 1);
+  }, [reloadChildKey]);
 
   // Fetch danh sách chương từ API
   useEffect(() => {
@@ -216,14 +220,24 @@ const Sidebar = ({ setLessonContentActive, setLessonActive }) => {
                   <div key={lessonIndex}>
                     <button
                       onClick={() => {
-                        toggleLessonOptions(lessonIndex);
-                        setLessonContentActive(lesson.lessonContents[0]);
-                        setLessonActive(lesson);
+                        const isUnlock = userProgresses.find((i) => i.lessonId === lesson.id)?.isUnlock === 1;
+                        if (isUnlock) {
+                          toggleLessonOptions(lessonIndex);
+                          setLessonContentActive(lesson.lessonContents[0]);
+                          setLessonActive(lesson);
+                        } else {
+                          Swal.fire({
+                            icon: "warning",
+                            title: "Bài học chưa được mở khóa",
+                            text: "Bạn cần hoàn thành bài học trước để mở khóa bài học này.",
+                            confirmButtonText: "Đã hiểu",
+                          });
+                        }
                       }}
-                      style={{ fontSize: "15px", borderRadius: "10px", marginBottom: "10px" }}
+                      style={{ fontSize: "15px", borderRadius: "10px", marginBottom: "10px", backgroundColor: lesson.id === lessonActive?.id ? "#e9ecef" : "#fff" }}
                       className="p-2 btn btn-light w-75"
                     >
-                      {lesson.name} - {lesson.durationMinutes} phút {userProgresses.length > 0 && userProgresses.find((i) => i.lessonId === lesson.id)?.isUnlock === 0 && <img className="ml-2 mb-1" style={{ width: "20px" }} src="/assets2/icons/lock.png" alt="" />}
+                      {lesson.name} - {lesson.durationMinutes} phút {userProgresses.length > 0 && userProgresses.find((i) => i.lessonId === lesson.id)?.isUnlock === 0 && <img className="ml-2 mb-1" style={{ width: "20px" }} src="/assets2/icons/lock.png" alt="Locked" />}
                     </button>
                   </div>
                 ))
