@@ -316,18 +316,18 @@ const CourseDetail = () => {
                   <h6 className="text-white my-3">{course?.instructor?.name}</h6>
                 </div>
 
-                <div className="d-flex justify-content-between border-bottom px-4">
+                {/* <div className="d-flex justify-content-between border-bottom px-4">
                   <h6 className="text-white my-3">Số bài học</h6>
                   <h6 className="text-white my-3">15</h6>
-                </div>
+                </div> */}
                 <div className="d-flex justify-content-between border-bottom px-4">
                   <h6 className="text-white my-3">Thời lượng học</h6>
                   <h6 className="text-white my-3">{course.totalDurationMinutes} phút</h6>
                 </div>
-                <div className="d-flex justify-content-between border-bottom px-4">
+                {/* <div className="d-flex justify-content-between border-bottom px-4">
                   <h6 className="text-white my-3">Số học viên</h6>
                   <h6 className="text-white my-3">15</h6>
-                </div>
+                </div> */}
                 <div className="d-flex justify-content-between px-4">
                   <h6 className="text-white my-3">Ngôn ngữ</h6>
                   <h6 className="text-white my-3">Tiếng Việt</h6>

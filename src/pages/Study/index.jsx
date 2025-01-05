@@ -50,7 +50,7 @@ const Study = () => {
     <div>
       <Header />
       <Menu />
-      <div className="d-flex">
+      <div className="d-flex" style={{ height: "100vh" }}>
         <Sidebar setLessonContentActive={setLessonContentActive} setLessonActive={setLessonActive} lessonActive={lessonActive} reloadChildKey={reloadKey} />
         {/* <!-- Detail Start --> */}
         <div className="container-fluid py-5">

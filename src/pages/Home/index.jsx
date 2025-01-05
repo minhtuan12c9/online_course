@@ -1,8 +1,44 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css"; // You can also use <link> for styles
+import axios from "axios";
+import { NavLink } from "react-router-dom";
 
 const Home = () => {
+  const [courses, setCourses] = useState([]); // List of courses
+  const [loading, setLoading] = useState(true); // Loading state
+  const [instructors, setInstructors] = useState([]);
+
+  // Fetch courses
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/api/course");
+        setCourses(response.data.slice(0, 6)); // Reverse order of courses
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCourses();
+  }, []);
+  // Lấy dữ liệu giảng viên từ API
+  useEffect(() => {
+    const fetchInstructors = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/api/instructor");
+        setInstructors(response.data.slice(0, 4)); // Đảo ngược danh sách giảng viên
+      } catch (error) {
+        console.error("There was an error fetching the instructors!", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInstructors();
+  }, []);
+
   AOS.init();
 
   // You can also pass an optional settings object
@@ -150,164 +186,35 @@ const Home = () => {
             </h5>
             <h1>Các Khoá Học Phổ Biến</h1>
           </div>
-          <div className="row">
-            <div className="col-lg-4 col-md-6 mb-4">
-              <div className="rounded overflow-hidden mb-2">
-                <img className="img-fluid" src="assets2/img/course-1.jpg" alt="" />
-                <div className="bg-secondary p-4">
-                  <div className="d-flex justify-content-between mb-3">
-                    <small className="m-0">
-                      <i className="fa fa-users text-primary mr-2"></i>25 Students
-                    </small>
-                    <small className="m-0">
-                      <i className="far fa-clock text-primary mr-2"></i>01h 30m
-                    </small>
-                  </div>
-                  <a className="h5" href="">
-                    Web design & development courses for beginner
-                  </a>
-                  <div className="border-top mt-4 pt-4">
-                    <div className="d-flex justify-content-between">
-                      <h6 className="m-0">
-                        <i className="fa fa-star text-primary mr-2"></i>4.5 <small>(250)</small>
-                      </h6>
-                      <h5 className="m-0">$99</h5>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          {loading ? (
+            <div className="text-center">
+              <p>Đang tải dữ liệu...</p>
             </div>
-            <div className="col-lg-4 col-md-6 mb-4">
-              <div className="rounded overflow-hidden mb-2">
-                <img className="img-fluid" src="assets2/img/course-2.jpg" alt="" />
-                <div className="bg-secondary p-4">
-                  <div className="d-flex justify-content-between mb-3">
-                    <small className="m-0">
-                      <i className="fa fa-users text-primary mr-2"></i>25 Students
-                    </small>
-                    <small className="m-0">
-                      <i className="far fa-clock text-primary mr-2"></i>01h 30m
-                    </small>
-                  </div>
-                  <a className="h5" href="">
-                    Web design & development courses for beginner
-                  </a>
-                  <div className="border-top mt-4 pt-4">
-                    <div className="d-flex justify-content-between">
-                      <h6 className="m-0">
-                        <i className="fa fa-star text-primary mr-2"></i>4.5 <small>(250)</small>
-                      </h6>
-                      <h5 className="m-0">$99</h5>
+          ) : (
+            <div className="row">
+              {courses.map((course) => (
+                <div className="col-lg-4 col-md-6 pb-4" key={course.id}>
+                  <NavLink data-aos="fade-up" data-aos-delay="200" className="courses-list-item position-relative d-block overflow-hidden mb-2" to={`/chitietkhoahoc/${course.id}`}>
+                    <img className="img-fluid" src={process.env.REACT_APP_API_URL + "/" + course.coverImage} alt={course.name} />
+                    <div className="courses-text">
+                      <h4 style={{ maxWidth: "350px", textWrap: "wrap", display: "block" }} className="text-center text-white px-3">
+                        {course.name}
+                      </h4>
+                      <div className="border-top w-100 mt-3">
+                        <div className="d-flex justify-content-between p-4">
+                          <span className="text-white">
+                            <i className="fa fa-star mr-2"></i>
+                            4,5
+                          </span>
+                          <span className="text-white">{course.price.toLocaleString("vi-VN")} VNĐ</span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  </NavLink>
                 </div>
-              </div>
+              ))}
             </div>
-            <div className="col-lg-4 col-md-6 mb-4">
-              <div className="rounded overflow-hidden mb-2">
-                <img className="img-fluid" src="assets2/img/course-3.jpg" alt="" />
-                <div className="bg-secondary p-4">
-                  <div className="d-flex justify-content-between mb-3">
-                    <small className="m-0">
-                      <i className="fa fa-users text-primary mr-2"></i>25 Students
-                    </small>
-                    <small className="m-0">
-                      <i className="far fa-clock text-primary mr-2"></i>01h 30m
-                    </small>
-                  </div>
-                  <a className="h5" href="">
-                    Web design & development courses for beginner
-                  </a>
-                  <div className="border-top mt-4 pt-4">
-                    <div className="d-flex justify-content-between">
-                      <h6 className="m-0">
-                        <i className="fa fa-star text-primary mr-2"></i>4.5 <small>(250)</small>
-                      </h6>
-                      <h5 className="m-0">$99</h5>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-4 col-md-6 mb-4">
-              <div className="rounded overflow-hidden mb-2">
-                <img className="img-fluid" src="assets2/img/course-4.jpg" alt="" />
-                <div className="bg-secondary p-4">
-                  <div className="d-flex justify-content-between mb-3">
-                    <small className="m-0">
-                      <i className="fa fa-users text-primary mr-2"></i>25 Students
-                    </small>
-                    <small className="m-0">
-                      <i className="far fa-clock text-primary mr-2"></i>01h 30m
-                    </small>
-                  </div>
-                  <a className="h5" href="">
-                    Web design & development courses for beginner
-                  </a>
-                  <div className="border-top mt-4 pt-4">
-                    <div className="d-flex justify-content-between">
-                      <h6 className="m-0">
-                        <i className="fa fa-star text-primary mr-2"></i>4.5 <small>(250)</small>
-                      </h6>
-                      <h5 className="m-0">$99</h5>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-4 col-md-6 mb-4">
-              <div className="rounded overflow-hidden mb-2">
-                <img className="img-fluid" src="assets2/img/course-5.jpg" alt="" />
-                <div className="bg-secondary p-4">
-                  <div className="d-flex justify-content-between mb-3">
-                    <small className="m-0">
-                      <i className="fa fa-users text-primary mr-2"></i>25 Students
-                    </small>
-                    <small className="m-0">
-                      <i className="far fa-clock text-primary mr-2"></i>01h 30m
-                    </small>
-                  </div>
-                  <a className="h5" href="">
-                    Web design & development courses for beginner
-                  </a>
-                  <div className="border-top mt-4 pt-4">
-                    <div className="d-flex justify-content-between">
-                      <h6 className="m-0">
-                        <i className="fa fa-star text-primary mr-2"></i>4.5 <small>(250)</small>
-                      </h6>
-                      <h5 className="m-0">$99</h5>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-4 col-md-6 mb-4">
-              <div className="rounded overflow-hidden mb-2">
-                <img className="img-fluid" src="assets2/img/course-6.jpg" alt="" />
-                <div className="bg-secondary p-4">
-                  <div className="d-flex justify-content-between mb-3">
-                    <small className="m-0">
-                      <i className="fa fa-users text-primary mr-2"></i>25 Students
-                    </small>
-                    <small className="m-0">
-                      <i className="far fa-clock text-primary mr-2"></i>01h 30m
-                    </small>
-                  </div>
-                  <a className="h5" href="">
-                    Web design & development courses for beginner
-                  </a>
-                  <div className="border-top mt-4 pt-4">
-                    <div className="d-flex justify-content-between">
-                      <h6 className="m-0">
-                        <i className="fa fa-star text-primary mr-2"></i>4.5 <small>(250)</small>
-                      </h6>
-                      <h5 className="m-0">$99</h5>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       </div>
       {/* <!-- Courses End --> */}
@@ -321,102 +228,45 @@ const Home = () => {
             </h5>
             <h1>Các Giảng Viên Nổi Tiếng</h1>
           </div>
-          <div className="row">
-            <div className="col-md-6 col-lg-3 text-center team mb-4">
-              <div className="team-item rounded overflow-hidden mb-2">
-                <div className="team-img position-relative">
-                  <img style={{ width: "270px", height: "270px", objectFit: "cover" }} className="img-fluid" src="assets2/img/the.jpg" alt="" />
-                  <div className="team-social">
-                    <a className="btn btn-outline-light btn-square mx-1" href="#">
-                      <i className="fab fa-twitter"></i>
-                    </a>
-                    <a className="btn btn-outline-light btn-square mx-1" href="#">
-                      <i className="fab fa-facebook-f"></i>
-                    </a>
-                    <a className="btn btn-outline-light btn-square mx-1" href="#">
-                      <i className="fab fa-linkedin-in"></i>
-                    </a>
+          {loading ? (
+            <div className="text-center">
+              <p>Đang tải dữ liệu...</p>
+            </div>
+          ) : (
+            <div className="row">
+              {instructors.map((instructor) => (
+                <div key={instructor.id} className="col-md-6 col-lg-3 text-center team mb-4">
+                  <div data-aos="fade-up" data-aos-delay="200" className="team-item rounded overflow-hidden mb-2">
+                    <div className="team-img position-relative">
+                      <img style={{ width: "270px", height: "270px", objectFit: "cover" }} className="img-fluid" src={process.env.REACT_APP_API_URL + "/" + instructor.avatar} alt={instructor.name} />
+                      <div className="team-social">
+                        <a className="btn btn-outline-light btn-square mx-1" href={instructor.link} target="_blank" rel="noopener noreferrer">
+                          <i className="fab fa-twitter"></i>
+                        </a>
+                        <a className="btn btn-outline-light btn-square mx-1" href={instructor.link} target="_blank" rel="noopener noreferrer">
+                          <i className="fab fa-facebook-f"></i>
+                        </a>
+                        <a className="btn btn-outline-light btn-square mx-1" href={instructor.link} target="_blank" rel="noopener noreferrer">
+                          <i className="fab fa-linkedin-in"></i>
+                        </a>
+                      </div>
+                    </div>
+                    <div className="bg-secondary p-4">
+                      <h5>{instructor.name}</h5>
+                      <p className="m-0">{instructor.position}</p>
+                      <p className="m-0">{instructor.phone}</p>
+                    </div>
                   </div>
                 </div>
-                <div className="bg-secondary p-4">
-                  <h5>Trần Tiến Thế</h5>
-                  <p className="m-0">Web Designer</p>
-                </div>
-              </div>
+              ))}
             </div>
-            <div className="col-md-6 col-lg-3 text-center team mb-4">
-              <div className="team-item rounded overflow-hidden mb-2">
-                <div className="team-img position-relative">
-                  <img style={{ width: "270px", height: "270px", objectFit: "cover" }} className="img-fluid" src="assets2/img/dai.jpg" alt="" />
-                  <div className="team-social">
-                    <a className="btn btn-outline-light btn-square mx-1" href="#">
-                      <i className="fab fa-twitter"></i>
-                    </a>
-                    <a className="btn btn-outline-light btn-square mx-1" href="#">
-                      <i className="fab fa-facebook-f"></i>
-                    </a>
-                    <a className="btn btn-outline-light btn-square mx-1" href="#">
-                      <i className="fab fa-linkedin-in"></i>
-                    </a>
-                  </div>
-                </div>
-                <div className="bg-secondary p-4">
-                  <h5>Hồ Xuân Đại</h5>
-                  <p className="m-0">AI Developer</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-lg-3 text-center team mb-4">
-              <div className="team-item rounded overflow-hidden mb-2">
-                <div className="team-img position-relative">
-                  <img style={{ width: "270px", height: "270px", objectFit: "cover" }} className="img-fluid" src="assets2/img/toan.jpg" alt="" />
-                  <div className="team-social">
-                    <a className="btn btn-outline-light btn-square mx-1" href="#">
-                      <i className="fab fa-twitter"></i>
-                    </a>
-                    <a className="btn btn-outline-light btn-square mx-1" href="#">
-                      <i className="fab fa-facebook-f"></i>
-                    </a>
-                    <a className="btn btn-outline-light btn-square mx-1" href="#">
-                      <i className="fab fa-linkedin-in"></i>
-                    </a>
-                  </div>
-                </div>
-                <div className="bg-secondary p-4">
-                  <h5>Đậu Đức Toàn</h5>
-                  <p className="m-0">Back-End Developer</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-lg-3 text-center team mb-4">
-              <div className="team-item rounded overflow-hidden mb-2">
-                <div className="team-img position-relative">
-                  <img style={{ width: "270px", height: "270px", objectFit: "cover" }} className="img-fluid" src="assets2/img/loi.png" alt="" />
-                  <div className="team-social">
-                    <a className="btn btn-outline-light btn-square mx-1" href="#">
-                      <i className="fab fa-twitter"></i>
-                    </a>
-                    <a className="btn btn-outline-light btn-square mx-1" href="#">
-                      <i className="fab fa-facebook-f"></i>
-                    </a>
-                    <a className="btn btn-outline-light btn-square mx-1" href="#">
-                      <i className="fab fa-linkedin-in"></i>
-                    </a>
-                  </div>
-                </div>
-                <div className="bg-secondary p-4">
-                  <h5>Đoàn Tiến Lợi</h5>
-                  <p className="m-0">Back-End Developer</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       </div>
       {/* <!-- Team End --> */}
 
       {/* <!-- Blog Start --> */}
-      <div data-aos="fade-up" data-aos-delay="200" className="container-fluid py-5">
+      {/* <div data-aos="fade-up" data-aos-delay="200" className="container-fluid py-5">
         <div className="container pt-5 pb-3">
           <div className="text-center mb-5">
             <h5 className="text-primary text-uppercase mb-3" style={{ letterSpacing: "5px" }}>
@@ -424,37 +274,8 @@ const Home = () => {
             </h5>
             <h1>Khoá Học Học Gần Đây</h1>
           </div>
-          <div className="row pb-3">
-            <div className="col-lg-4 mb-4">
-              <div className="blog-item position-relative overflow-hidden rounded mb-2">
-                <img className="img-fluid" src="assets2/img/blog-1.jpg" alt="" />
-                <a className="blog-overlay text-decoration-none" href="">
-                  <h5 className="text-white mb-3">Lorem elitr magna stet eirmod labore amet labore clita at ut clita</h5>
-                  <p className="text-primary m-0">Jan 01, 2050</p>
-                </a>
-              </div>
-            </div>
-            <div className="col-lg-4 mb-4">
-              <div className="blog-item position-relative overflow-hidden rounded mb-2">
-                <img className="img-fluid" src="assets2/img/blog-2.jpg" alt="" />
-                <a className="blog-overlay text-decoration-none" href="">
-                  <h5 className="text-white mb-3">Lorem elitr magna stet eirmod labore amet labore clita at ut clita</h5>
-                  <p className="text-primary m-0">Jan 01, 2050</p>
-                </a>
-              </div>
-            </div>
-            <div className="col-lg-4 mb-4">
-              <div className="blog-item position-relative overflow-hidden rounded mb-2">
-                <img className="img-fluid" src="assets2/img/blog-3.jpg" alt="" />
-                <a className="blog-overlay text-decoration-none" href="">
-                  <h5 className="text-white mb-3">Lorem elitr magna stet eirmod labore amet labore clita at ut clita</h5>
-                  <p className="text-primary m-0">Jan 01, 2050</p>
-                </a>
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
+      </div> */}
       {/* <!-- Blog End --> */}
     </div>
   );
