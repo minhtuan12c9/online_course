@@ -68,7 +68,7 @@ const Courses = () => {
               {displayedCourses.map((course) => (
                 <div className="col-lg-4 col-md-6 pb-4" key={course.id}>
                   <NavLink data-aos="fade-up" data-aos-delay="200" className="courses-list-item position-relative d-block overflow-hidden mb-2" to={`/chitietkhoahoc/${course.id}`}>
-                    <img className="img-fluid" src={process.env.REACT_APP_API_URL + "/" + course.coverImage} alt={course.name} />
+                    <img style={{ height: "450px" }} className="img-fluid" src={process.env.REACT_APP_API_URL + "/" + course.coverImage} alt={course.name} />
                     <div className="courses-text">
                       <h4 style={{ maxWidth: "350px", textWrap: "wrap", display: "block" }} className="text-center text-white px-3">
                         {course.name}

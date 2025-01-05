@@ -26,7 +26,7 @@ const Study = () => {
           Swal.fire({
             icon: "success",
             title: "Hoàn thành!",
-            text: `Bạn đã học xong bài học này!`,
+            text: `Quá đã! Bạn đã học xong bài học này rồi!`,
           });
           console.log("Task completed, stopping polling.");
           setReloadKey((prev) => prev + 1);

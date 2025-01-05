@@ -228,7 +228,7 @@ const Sidebar = ({ setLessonContentActive, setLessonActive, lessonActive, reload
                         } else {
                           Swal.fire({
                             icon: "warning",
-                            title: "Bài học chưa được mở khóa",
+                            title: "Ôi bạn ơi!",
                             text: "Bạn cần hoàn thành bài học trước để mở khóa bài học này.",
                             confirmButtonText: "Đã hiểu",
                           });
