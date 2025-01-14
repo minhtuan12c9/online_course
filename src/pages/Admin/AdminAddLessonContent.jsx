@@ -57,7 +57,7 @@ const AdminAddLessonContent = () => {
     <div>
       <Header />
       <MenuAdmin />
-      <div className="modal-dialog">
+      <div className="modal-dialog" style={{ zIndex: 1 }}>
         <div className="modal-content">
           <div className="modal-header justify-content-center">
             <h5 className="modal-title fw-bold" id="staticBackdropLabel">
